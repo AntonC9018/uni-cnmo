@@ -2,7 +2,8 @@
 
 @rem Ninja needs to be in path.
 @rem Maybe It is possible to give the path to cmake, but I couldn't find how.
-SET PATH=%PATH%;D:\Qt\Tools\Ninja
+where ninja
+IF %ERRORLEVEL% EQU 1   SET PATH=%PATH%;D:\Qt\Tools\Ninja
 
 @rem Copied this command from Qt Creator.
 @rem -S means Source, -B means Build (directories)
