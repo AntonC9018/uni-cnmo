@@ -1,0 +1,9 @@
+*.dll
+*.exe
+
+# Some stuff I used
+find.bat
+result.txt
+CMakeLists.txt.user
+env.txt
+.vscode
