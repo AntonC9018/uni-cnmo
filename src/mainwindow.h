@@ -15,4 +15,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+signals:
+public slots:
 };
