@@ -36,11 +36,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
+# The directory where you store most of your .o objects
+# In my case, it is in the parent directory
+set(ONE_LIBS_DIRECTORY ${CMAKE_SOURCE_DIR}/../libs)
+
+# The git submodules directory
+set(SUBMODULES_DIRECTORY ${CMAKE_SOURCE_DIR}/third_party)
+
+
 set(PROJECT_SOURCES
     src/main.cpp
     src/mainwindow.cpp
     src/mainwindow.h
     src/mainwindow.ui
+    ${SUBMODULES_DIRECTORY}/strlib/strlib.cpp
 )
 
 # Tried to use exprtk, but it was too large (20+ mins to compile, 30+ mins to link).
@@ -53,10 +62,6 @@ qt_add_executable(cnmo ${PROJECT_SOURCES})
 
 target_link_libraries(cnmo PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
-# The directory where you store most of your .o objects
-# In my case, it is in the parent directory
-set(ONE_LIBS_DIRECTORY ${CMAKE_SOURCE_DIR}/../libs)
-
 # For now, use this library: https://github.com/cparse/cparse
 # The problem with this implementation is that there is an issue with error handling. 
 # See: https://github.com/cparse/cparse/issues/78
@@ -67,3 +72,5 @@ target_link_libraries(cnmo PRIVATE
 
 # I store includes (header files / header file libraries) next to libs.
 include_directories(cnmo PUBLIC ../includes)
+# Include my strlib library
+include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/strlib)
