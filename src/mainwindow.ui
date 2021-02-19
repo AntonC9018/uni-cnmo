@@ -76,7 +76,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="function-lower-spinbox"/>
+          <widget class="QDoubleSpinBox" name="function-lower-spinbox"/>
          </item>
          <item>
           <widget class="QLabel" name="function-upper-label">
@@ -89,7 +89,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="function-upper-spinbox"/>
+          <widget class="QDoubleSpinBox" name="function-upper-spinbox"/>
          </item>
         </layout>
        </item>

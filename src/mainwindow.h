@@ -31,8 +31,12 @@ private:
 
 signals:
     void selected_function_changed();
+    void upper_bound_changed();
+    void lower_bound_changed();
 
 public slots:
     void change_selected_custom_function();
     void change_selected_builtin_function(int index);
+    void change_upper_bound(double value);
+    void change_lower_bound(double value);
 };

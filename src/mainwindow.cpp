@@ -44,7 +44,19 @@ MainWindow::MainWindow(QWidget *parent)
     );
 
     // Upper and lower bounds
-    // ui->function_upper_spinbox->
+    ui->function_upper_spinbox->setRange(-1024, 1024);
+    connect(ui->function_upper_spinbox,
+            SIGNAL(valueChanged(double)),
+            this,
+            SLOT(change_upper_bound(double))
+    );
+    
+    ui->function_lower_spinbox->setRange(-1024, 1024);
+    connect(ui->function_lower_spinbox,
+            SIGNAL(valueChanged(double)),
+            this,
+            SLOT(change_lower_bound(double))
+    );
 }
 
 MainWindow::~MainWindow()
@@ -90,5 +102,35 @@ void MainWindow::change_selected_custom_function()
 
         if (ui->function_custom_rbutton->isChecked())
             selected_function_changed();
+    }
+}
+
+void MainWindow::change_upper_bound(double value)
+{
+    double new_value = std::max(value, selected_custom_function.lower_bound);
+    if (selected_custom_function.upper_bound != new_value)
+    {
+        selected_custom_function.upper_bound = new_value;
+        // trigger signal
+    }
+    // change the text
+    if (new_value != value)
+    {
+        ui->function_upper_spinbox->setValue(new_value);
+    }
+}
+
+void MainWindow::change_lower_bound(double value)
+{
+    double new_value = std::min(value, selected_custom_function.upper_bound);
+    if (selected_custom_function.lower_bound != new_value)
+    {
+        selected_custom_function.lower_bound = new_value;
+        // trigger signal
+    }
+    // change the text
+    if (new_value != value)
+    {
+        ui->function_lower_spinbox->setValue(new_value);
     }
 }
