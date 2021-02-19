@@ -1,4 +1,3 @@
-#include <strlib.h>
 #include "profiler.h"
 
 #include "mainwindow.h"
@@ -10,40 +9,42 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    // These do not have a default constructor, which is why they have trash by default
+    custom_function_str           = STR_NULL;
+    selected_custom_function.text = STR_NULL;
+
     ui->setupUi(this);
     ui->precision_spin_box->setRange(-10, -5);
     ui->precision_spin_box->setValue(-7);
     ui->precision_spin_box->setSingleStep(0.1);
 
+    // Setup builtin functions
     {
         using namespace Builtin;
 
-        compile();
-
-        for (int i = 0; i < expression_count; i++)
+        for (int i = 0; i < func_count; i++)
         {
             ui->function_selection_combo->addItem(
-                QString::fromUtf8(expression_strings[i]));
+                QString::fromUtf8(funcs[i].text.chars));
         }
-
-        connect(ui->function_selection_combo, 
-                SIGNAL(currentIndexChanged(int)), 
-                this, 
-                SLOT(index_changed_function_combo(int))
-        );
     }
 
+    // Selecting the builtin function 
+    connect(ui->function_selection_combo, 
+            SIGNAL(currentIndexChanged(int)), 
+            this, 
+            SLOT(change_selected_builtin_function(int))
+    );
+
+    // Selecting a custom function
     connect(ui->function_custom_edit, 
             SIGNAL(editingFinished()), 
             this, 
-            SLOT(editing_finished_custom_function())
+            SLOT(change_selected_custom_function())
     );
 
-    connect(ui->function_custom_rbutton, 
-            SIGNAL(toggled(bool)),
-            this,
-            SLOT(toggled_custom_selection(bool))
-    );
+    // Upper and lower bounds
+    // ui->function_upper_spinbox->
 }
 
 MainWindow::~MainWindow()
@@ -51,32 +52,28 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::set_selected_function(calculator func)
-{
-    puts(func.str().c_str());
-    selected_function = func;
-    selected_function_changed(func);
-}
-
-void MainWindow::index_changed_function_combo(int index)
-{
-    if (ui->function_predefined_rbutton->isChecked())
-        change_selected_function_to_builtin(index);
-}
-
-void MainWindow::change_selected_function_to_builtin(int index)
-{
-    if (index < Builtin::expression_count)
-        set_selected_function(Builtin::calculators[index]);
-}
-
-void MainWindow::editing_finished_custom_function()
+const Func* MainWindow::get_selected_function()
 {
     if (ui->function_custom_rbutton->isChecked())
-        change_selected_function_to_custom();
+        return &selected_custom_function;
+    else
+        return selected_builtin_function; 
 }
 
-void MainWindow::change_selected_function_to_custom()
+void MainWindow::change_selected_builtin_function(int index)
+{
+    if (index < Builtin::func_count)
+    {
+        selected_builtin_function = &Builtin::funcs[index];
+
+        puts(selected_builtin_function->text.chars);
+
+        if (ui->function_predefined_rbutton->isChecked())
+            selected_function_changed();
+    }
+}
+
+void MainWindow::change_selected_custom_function()
 {
     auto qstr_utf8 = ui->function_custom_edit->text().toUtf8();
 
@@ -84,19 +81,14 @@ void MainWindow::change_selected_function_to_custom()
     {
         // Since we need this array to be null terminated, and there is no
         // guarantee for that from qstr_utf8, we have to copy the string with malloc.
-        str_t str = str_copy(qstr_utf8.data(), qstr_utf8.length());
+        str_smart_replace(&custom_function_str, qstr_utf8.data(), qstr_utf8.length());
 
-        calculator calc(str.chars);
-        set_selected_function(calc);
+        selected_custom_function.text = str_view(custom_function_str);
+        selected_custom_function.calculator.compile(custom_function_str.chars);
 
-        str_free(str);
+        puts(custom_function_str.chars);
+
+        if (ui->function_custom_rbutton->isChecked())
+            selected_function_changed();
     }
-}
-
-void MainWindow::toggled_custom_selection(bool checked)
-{
-    if (checked)
-        change_selected_function_to_custom();
-    else
-        change_selected_function_to_builtin(ui->function_selection_combo->currentIndex());
 }

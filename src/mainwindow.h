@@ -2,6 +2,8 @@
 #include <QMainWindow>
 #include <QComboBox>
 #include <cparse/shunting-yard.h>
+#include <strlib.h>
+#include "func.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -17,18 +19,20 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    calculator selected_function;
 
-    void set_selected_function(calculator func);
+    const Func* selected_builtin_function;
+    
+    str_t custom_function_str;
+    Func selected_custom_function;
 
-    void change_selected_function_to_custom();
-    void change_selected_function_to_builtin(int index);
+    // Returns the custom selected function or the builtin function
+    // depending on the current selection.
+    const Func* get_selected_function();
 
 signals:
-    void selected_function_changed(calculator func);
+    void selected_function_changed();
 
 public slots:
-    void index_changed_function_combo(int index);
-    void editing_finished_custom_function();
-    void toggled_custom_selection(bool checked);
+    void change_selected_custom_function();
+    void change_selected_builtin_function(int index);
 };
