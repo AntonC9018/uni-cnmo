@@ -36,7 +36,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QRadioButton" name="function-predefined-rbutton">
+          <widget class="QRadioButton" name="function-builtin-rbutton">
            <property name="text">
             <string>Predefined</string>
            </property>
@@ -114,14 +114,14 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <item>
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="algorithm-label">
            <property name="text">
-            <string>TextLabel</string>
+            <string>Algorithm</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBox"/>
+          <widget class="QComboBox" name="algorithm-combo"/>
          </item>
         </layout>
        </item>

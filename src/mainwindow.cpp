@@ -57,6 +57,12 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             SLOT(change_lower_bound(double))
     );
+
+    // Algorithms
+    ui->algorithm_combo->addItem("Bisection");
+    ui->algorithm_combo->addItem("Newton");
+    ui->algorithm_combo->addItem("Secant");
+    ui->algorithm_combo->addItem("Chord");
 }
 
 MainWindow::~MainWindow()
@@ -80,7 +86,7 @@ void MainWindow::change_selected_builtin_function(int index)
 
         puts(selected_builtin_function->text.chars);
 
-        if (ui->function_predefined_rbutton->isChecked())
+        if (ui->function_builtin_rbutton->isChecked())
             selected_function_changed();
     }
 }
