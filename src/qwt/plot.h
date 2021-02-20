@@ -18,15 +18,12 @@
 #include "curvetracker.h"
 #include "../func.h"
 
-
-class QPolygonF;
-
 class Plot: public QwtPlot
 {
     Q_OBJECT
 
 public:
-    Plot( QWidget * = NULL );
+    explicit Plot(QWidget * parent = NULL);
     void updateCurve(const Func* func);
 
 private:

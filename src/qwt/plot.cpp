@@ -10,11 +10,11 @@ Plot::Plot(QWidget *parent)
     , tracker(&canvas)
     , zero_scale(QwtScaleDraw::BottomScale, 0.0)
 {
-    // we want to have the axis scales like a frame around the
-    // canvas
-    plotLayout()->setAlignCanvasToScales(true);
-    for (int axis = 0; axis < QwtPlot::axisCnt; axis++)
-        axisWidget(axis)->setMargin(0);
+    {
+        plotLayout()->setAlignCanvasToScales(true);
+        for (int axis = 0; axis < QwtPlot::axisCnt; axis++)
+            axisWidget(axis)->setMargin(0);
+    }
     {
         QPalette palette;
         palette.setColor(QPalette::Foreground, QColor("Blue"));
@@ -54,9 +54,6 @@ Plot::Plot(QWidget *parent)
         tracker.setStateMachine(new QwtPickerTrackerMachine());
         tracker.setRubberBandPen(QPen("MediumOrchid"));
     }
-
-    updateCurve(&Builtin::funcs[0]);
-    updateCurve(&Builtin::funcs[1]);
 }
 
 void Plot::updateCurve(const Func* func)

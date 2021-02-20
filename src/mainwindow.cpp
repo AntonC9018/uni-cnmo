@@ -62,6 +62,15 @@ MainWindow::MainWindow(QWidget *parent)
     ui->algorithm_combo->addItem("Newton");
     ui->algorithm_combo->addItem("Secant");
     ui->algorithm_combo->addItem("Chord");
+
+    // Draw some function
+    ui->plot->updateCurve(&Builtin::funcs[4]);
+
+    connect(this,
+            SIGNAL(selected_function_changed()),
+            this,
+            SLOT(changed_function_redraw_graph())
+    );
 }
 
 MainWindow::~MainWindow()
@@ -86,7 +95,9 @@ void MainWindow::change_selected_builtin_function(int index)
         puts(selected_builtin_function->text.chars);
 
         if (ui->function_builtin_rbutton->isChecked())
-            selected_function_changed();
+        {
+            emit selected_function_changed();
+        }
     }
 }
 
@@ -106,7 +117,7 @@ void MainWindow::change_selected_custom_function()
         puts(custom_function_str.chars);
 
         if (ui->function_custom_rbutton->isChecked())
-            selected_function_changed();
+            emit selected_function_changed();
     }
 }
 
@@ -138,4 +149,10 @@ void MainWindow::change_lower_bound(double value)
     {
         ui->function_lower_spinbox->setValue(new_value);
     }
+}
+
+
+void MainWindow::changed_function_redraw_graph()
+{
+    ui->plot->updateCurve(get_selected_function());
 }

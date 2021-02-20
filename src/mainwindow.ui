@@ -133,7 +133,7 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <layout class="QHBoxLayout" name="visualization-box">
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_8">
            <item>
@@ -153,7 +153,7 @@
           </layout>
          </item>
          <item>
-          <widget class="QGraphicsView" name="graphicsView"/>
+          <widget class="Plot" name="plot"/>
          </item>
         </layout>
        </item>

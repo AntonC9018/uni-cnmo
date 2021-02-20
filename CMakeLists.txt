@@ -88,5 +88,7 @@ target_link_libraries(cnmo PRIVATE
 include_directories(cnmo PUBLIC ../includes)
 # Qwt is also there in my case
 include_directories(cnmo PUBLIC ../includes/qwt)
+# Include some local dirs so that ui compiler works correctly 
+include_directories(cnmo PUBLIC  src/qwt)
 # Include my strlib library
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/strlib)

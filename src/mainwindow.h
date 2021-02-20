@@ -3,6 +3,7 @@
 #include <QComboBox>
 #include <cparse/shunting-yard.h>
 #include <strlib.h>
+#include "qwt/plot.h"
 #include "func.h"
 
 QT_BEGIN_NAMESPACE
@@ -19,6 +20,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    Plot *plot;
 
     const Func* selected_builtin_function;
     
@@ -39,4 +41,5 @@ public slots:
     void change_selected_builtin_function(int index);
     void change_upper_bound(double value);
     void change_lower_bound(double value);
+    void changed_function_redraw_graph();
 };
