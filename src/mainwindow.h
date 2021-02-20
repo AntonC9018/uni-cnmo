@@ -20,7 +20,6 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    Plot *plot;
 
     const Func* selected_builtin_function;
     

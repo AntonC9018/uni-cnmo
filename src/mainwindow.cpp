@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
+    ui->function_builtin_rbutton->setChecked(true);
+
     // Selecting the builtin function 
     connect(ui->function_selection_combo, 
             SIGNAL(currentIndexChanged(int)), 
@@ -64,10 +66,28 @@ MainWindow::MainWindow(QWidget *parent)
     ui->algorithm_combo->addItem("Chord");
 
     // Draw some function
-    ui->plot->updateCurve(&Builtin::funcs[4]);
+    ui->plot->updateCurve(&Builtin::funcs[0]);
 
     connect(this,
             SIGNAL(selected_function_changed()),
+            this,
+            SLOT(changed_function_redraw_graph())
+    );
+
+    connect(this,
+            SIGNAL(upper_bound_changed()),
+            this,
+            SLOT(changed_function_redraw_graph())
+    );
+    
+    connect(this,
+            SIGNAL(lower_bound_changed()),
+            this,
+            SLOT(changed_function_redraw_graph())
+    );
+
+    connect(ui->function_custom_rbutton,
+            SIGNAL(toggled(bool)),
             this,
             SLOT(changed_function_redraw_graph())
     );
@@ -127,7 +147,7 @@ void MainWindow::change_upper_bound(double value)
     if (selected_custom_function.upper_bound != new_value)
     {
         selected_custom_function.upper_bound = new_value;
-        // trigger signal
+        emit upper_bound_changed();
     }
     // change the text
     if (new_value != value)
@@ -142,7 +162,7 @@ void MainWindow::change_lower_bound(double value)
     if (selected_custom_function.lower_bound != new_value)
     {
         selected_custom_function.lower_bound = new_value;
-        // trigger signal
+        emit lower_bound_changed();
     }
     // change the text
     if (new_value != value)
