@@ -2,8 +2,7 @@
 
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-
-#include "equations.h"
+#include "builtin.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)

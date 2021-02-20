@@ -49,6 +49,8 @@ set(PROJECT_SOURCES
     src/mainwindow.cpp
     src/mainwindow.h
     src/mainwindow.ui
+    src/qwt/curvetracker.cpp
+    src/qwt/plot.cpp
     ${SUBMODULES_DIRECTORY}/strlib/strlib.cpp
 )
 
@@ -58,7 +60,11 @@ set(PROJECT_SOURCES
 # https://digitalkarabela.com/mingw-w64-how-to-fix-file-too-big-too-many-sections/
 # set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wa,-mbig-obj -O2")
 
-qt_add_executable(cnmo ${PROJECT_SOURCES})
+# Remove Qwt's deprecation warnings
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wno-deprecated-declarations")
+
+add_executable(cnmo ${PROJECT_SOURCES})
+
 
 target_link_libraries(cnmo PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
@@ -70,7 +76,17 @@ target_link_libraries(cnmo PRIVATE
     ${ONE_LIBS_DIRECTORY}/cparse/my-features.o 
 )
 
+# Use qwt for graphs.
+target_link_libraries(cnmo PRIVATE 
+    ${ONE_LIBS_DIRECTORY}/qwt/libqwt.a 
+    ${ONE_LIBS_DIRECTORY}/qwt/libqwtd.a 
+    ${ONE_LIBS_DIRECTORY}/qwt/libqwtmathml.a
+    ${ONE_LIBS_DIRECTORY}/qwt/libqwtmathmld.a
+)
+
 # I store includes (header files / header file libraries) next to libs.
 include_directories(cnmo PUBLIC ../includes)
+# Qwt is also there in my case
+include_directories(cnmo PUBLIC ../includes/qwt)
 # Include my strlib library
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/strlib)

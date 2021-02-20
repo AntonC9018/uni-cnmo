@@ -1,5 +1,6 @@
 #include <QApplication>
 #include "mainwindow.h"
+#include "qwt/plot.h"
 
 int main(int argc, char *argv[])
 {
@@ -7,6 +8,10 @@ int main(int argc, char *argv[])
     MainWindow window;
 
     window.show();
+    
+    Plot plot;
+    plot.resize( 600, 400 );
+    plot.show();
 
     return app.exec();
 }
