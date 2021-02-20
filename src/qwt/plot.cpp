@@ -76,4 +76,5 @@ void Plot::updateCurve(const Func* func)
 
     setAxisScale(QwtPlot::yLeft, min_y - leeway_y, max_y + leeway_y);
     setAxisScale(QwtPlot::xBottom, func->lower_bound - leeway_x, func->upper_bound + leeway_x);
+    replot();
 }
