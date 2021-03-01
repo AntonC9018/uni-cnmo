@@ -16,7 +16,6 @@
 #include <qwt_plot_scaleitem.h>
 
 #include "curvetracker.h"
-#include "../func.h"
 
 class Plot: public QwtPlot
 {
@@ -24,6 +23,7 @@ class Plot: public QwtPlot
 
 public:
     explicit Plot(QWidget * parent = NULL);
+
     void updateCurve(Func* func);
 
 private:

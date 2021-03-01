@@ -14,7 +14,15 @@ struct Func
     double x;
     double upper_bound;
     double lower_bound;
+
+    inline double operator()(double x);
 };
+
+inline double Func::operator()(double x)
+{
+    this->x = x;
+    return te_eval(this->expr);
+}
 
 inline void func_compile(Func* func, int* error = NULL)
 {
