@@ -9,8 +9,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     // These do not have a default constructor, which is why they have trash by default
-    custom_function_str           = STR_NULL;
+    custom_function_str = STR_NULL;
     selected_custom_function.text = STR_NULL;
+    selected_custom_function.expr = NULL;
+    selected_custom_function.variable = { "x", &selected_custom_function.x };
 
     ui->setupUi(this);
     ui->precision_spin_box->setRange(-10, -5);
@@ -98,7 +100,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-const Func* MainWindow::get_selected_function()
+Func* MainWindow::get_selected_function()
 {
     if (ui->function_custom_rbutton->isChecked())
         return &selected_custom_function;
@@ -115,15 +117,17 @@ void MainWindow::change_selected_builtin_function(int index)
         puts(selected_builtin_function->text.chars);
 
         if (ui->function_builtin_rbutton->isChecked())
-        {
             emit selected_function_changed();
-        }
     }
 }
 
 void MainWindow::change_selected_custom_function()
 {
     auto qstr_utf8 = ui->function_custom_edit->text().toUtf8();
+
+    int error = 0;
+
+    te_free(selected_custom_function.expr);
 
     if (qstr_utf8 != "")
     {
@@ -132,9 +136,16 @@ void MainWindow::change_selected_custom_function()
         str_smart_replace(&custom_function_str, qstr_utf8.data(), qstr_utf8.length());
 
         selected_custom_function.text = str_view(custom_function_str);
-        selected_custom_function.calculator.compile(custom_function_str.chars);
+        func_compile(&selected_custom_function, &error);
 
-        puts(custom_function_str.chars);
+        if (!error && ui->function_custom_rbutton->isChecked())
+            emit selected_function_changed();
+    }
+
+    if (error)
+    {
+        selected_custom_function.expr = te_compile("0", NULL, 0, NULL);
+        puts("The function is invalid");
 
         if (ui->function_custom_rbutton->isChecked())
             emit selected_function_changed();
@@ -174,5 +185,6 @@ void MainWindow::change_lower_bound(double value)
 
 void MainWindow::changed_function_redraw_graph()
 {
+    puts(get_selected_function()->text.chars);
     ui->plot->updateCurve(get_selected_function());
 }

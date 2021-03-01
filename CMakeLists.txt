@@ -63,18 +63,10 @@ set(PROJECT_SOURCES
 # Remove Qwt's deprecation warnings
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wno-deprecated-declarations")
 
+# Tinyexpr with differentiation
 add_executable(cnmo ${PROJECT_SOURCES})
 
-
 target_link_libraries(cnmo PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-# For now, use this library: https://github.com/cparse/cparse
-# The problem with this implementation is that there is an issue with error handling. 
-# See: https://github.com/cparse/cparse/issues/78
-target_link_libraries(cnmo PRIVATE 
-    ${ONE_LIBS_DIRECTORY}/cparse/core-shunting-yard.o
-    ${ONE_LIBS_DIRECTORY}/cparse/my-features.o 
-)
 
 # Use qwt for graphs.
 target_link_libraries(cnmo PRIVATE 
@@ -82,6 +74,7 @@ target_link_libraries(cnmo PRIVATE
     ${ONE_LIBS_DIRECTORY}/qwt/libqwtd.a 
     ${ONE_LIBS_DIRECTORY}/qwt/libqwtmathml.a
     ${ONE_LIBS_DIRECTORY}/qwt/libqwtmathmld.a
+    ${SUBMODULES_DIRECTORY}/tinyexpr/tinyexpr.o
 )
 
 # I store includes (header files / header file libraries) next to libs.
@@ -90,5 +83,7 @@ include_directories(cnmo PUBLIC ../includes)
 include_directories(cnmo PUBLIC ../includes/qwt)
 # Include some local dirs so that ui compiler works correctly 
 include_directories(cnmo PUBLIC  src/qwt)
+include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY})
 # Include my strlib library
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/strlib)
+include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/tinyexpr)

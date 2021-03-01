@@ -24,7 +24,7 @@ class Plot: public QwtPlot
 
 public:
     explicit Plot(QWidget * parent = NULL);
-    void updateCurve(const Func* func);
+    void updateCurve(Func* func);
 
 private:
     QwtPlotScaleItem zero_scale;

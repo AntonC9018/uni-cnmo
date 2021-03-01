@@ -1,7 +1,6 @@
 #pragma once
 #include <QMainWindow>
 #include <QComboBox>
-#include <cparse/shunting-yard.h>
 #include <strlib.h>
 #include "qwt/plot.h"
 #include "func.h"
@@ -21,14 +20,14 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    const Func* selected_builtin_function;
+    Func* selected_builtin_function;
     
     str_t custom_function_str;
     Func selected_custom_function;
 
     // Returns the custom selected function or the builtin function
     // depending on the current selection.
-    const Func* get_selected_function();
+    Func* get_selected_function();
 
 signals:
     void selected_function_changed();

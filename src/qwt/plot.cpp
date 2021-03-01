@@ -56,11 +56,12 @@ Plot::Plot(QWidget *parent)
     }
 }
 
-void Plot::updateCurve(const Func* func)
+void Plot::updateCurve(Func* func)
 {
     const size_t num_points = 1000;
     const double LEEWAY_Y_PERC = 0.1;
     const double LEEWAY_X_PERC = 0.1;
+    const double MIN_HEIGHT = 0.01;
 
     auto xys = func_eval_range(func, num_points);
     auto data = new QwtPointArrayData(xys.inputs, xys.outputs);
@@ -73,6 +74,15 @@ void Plot::updateCurve(const Func* func)
 
     double leeway_y = (max_y - min_y) * LEEWAY_Y_PERC;
     double leeway_x = (func->upper_bound - func->lower_bound) * LEEWAY_X_PERC;
+
+    double range_y = max_y - min_y;
+
+    if (range_y < MIN_HEIGHT)
+    {
+        double y = MIN_HEIGHT - range_y;
+        max_y += y / 2;
+        min_y -= y / 2;
+    }
 
     setAxisScale(QwtPlot::yLeft, min_y - leeway_y, max_y + leeway_y);
     setAxisScale(QwtPlot::xBottom, func->lower_bound - leeway_x, func->upper_bound + leeway_x);

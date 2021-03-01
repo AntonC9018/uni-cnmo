@@ -1,5 +1,4 @@
 #pragma once
-#include <cparse/shunting-yard.h>
 #include <strlib.h>
 
 #include "func.h"
@@ -8,7 +7,7 @@
 
 namespace Builtin
 {
-    const Func funcs[]
+    static Func funcs[]
     {
         func_make(str_lit("2 * sin(3 * x) - ln(x^3 - 1) + 4"), 2, 9),
         func_make(str_lit("sin(pi * x / 6) - cos(x - 1)"), -7, 8),
