@@ -1,3 +1,4 @@
+#pragma once
 #include "util.h"
 
 namespace Root_Finding
@@ -19,10 +20,12 @@ namespace Root_Finding
 
         while (i < max_iters)
         {
-            if (abs(f(x)) <= tolerance)
+            double dx = f(x) / f_derivative(x);
+            x = x - dx;
+            
+            if (abs(dx) < tolerance)
                 return x;
 
-            x = x - f(x) / f_derivative(x); 
             i++;
         }
 

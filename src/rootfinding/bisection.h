@@ -1,3 +1,4 @@
+#pragma once
 #include "util.h"
 
 namespace Root_Finding
@@ -13,15 +14,13 @@ namespace Root_Finding
         double tolerance, size_t max_iters, bool* error)
     {
         RF_ERROR_IF_FALSE(bisection_conditions_met(f, start, end));
-
         size_t i = 0;
         bool sign_start = signbit(f(start));
 
         while (i < max_iters)
         {
             double middle = (start + end) / 2;
-            if (f(middle) == 0 || (end - start) / 2 < tolerance)
-            // if (abs(f(middle)) <= tolerance)
+            if (f(middle) < tolerance && (end - start) < tolerance * 2)
             {
                 return middle;
             }
