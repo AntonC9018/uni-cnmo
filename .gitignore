@@ -7,5 +7,3 @@ result.txt
 CMakeLists.txt.user
 env.txt
 .vscode
-test.bat
-test.cpp
