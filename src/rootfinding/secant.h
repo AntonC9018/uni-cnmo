@@ -4,14 +4,18 @@
 namespace Root_Finding
 {
     template<typename Function>
-    inline bool secant_conditions_met(Function f, double x0, double x1)
+    inline bool secant_conditions_met(const Function f, const Interval i)
     {
-        return f(x0) != f(x1);
+        return f(i.start) != f(i.end);
     }
 
     template<typename Function>
-    double secant(Function f, double x0, double x1, 
-        const double tolerance, const size_t max_iters, bool* error)
+    double secant(
+        const Function f, 
+        const double x0, 
+        const double x1, 
+        Error_Data* error_data, 
+        Profiler* profiler = &_std_profiler)
     {
         size_t i = 0;
         double x_prev   = x0;
@@ -19,11 +23,13 @@ namespace Root_Finding
         double f_x_prev = f(x0);
         double dx       = x1 - x0;
 
-        while (i < max_iters)
+        while (i < error_data->max_iters)
         {
             double f_x = f(x);
 
-            if (abs(f_x) < tolerance && abs(dx) < tolerance)
+            profiler->num_iters++;
+
+            if (abs(f_x) < error_data->tolerance && abs(dx) < error_data->tolerance)
                 return x;
 
             dx *= f_x / (f_x_prev - f_x);
@@ -32,31 +38,35 @@ namespace Root_Finding
             i++;
         }
 
-        RF_ERROR();
+        RF_ITERATIONS_ERROR();
     }
 
     template<typename Function>
-    double secant_enhanced_start(Function f, Function f_second_derivative, 
-        double start, double end, const double tolerance, const size_t max_iters, bool* error)
+    double secant_enhanced_start(
+        const Function f, 
+        const Function f_second_derivative, 
+        const Interval inter,
+        Error_Data* error_data, 
+        Profiler* profiler = &_std_profiler)
     {
-        RF_ERROR_IF_FALSE(secant_conditions_met(f, start, end));
+        RF_INITIAL_CHECK(secant_conditions_met(f, inter));
 
         double x0;
         double x1;
 
         // Choose the place where the derivative is bigger. Imagine x^2 graph.
         // This condition will always get you on the steep slope rather then in the trough.
-        if (signbit(f(start)) == signbit(f_second_derivative(start)))
+        if (signbit(f(inter.start)) == signbit(f_second_derivative(inter.start)))
         {
-            x0 = start;
-            x1 = start + tolerance;
+            x0 = inter.start;
+            x1 = inter.start + error_data->tolerance;
         }
         else
         {
-            x0 = end;
-            x1 = end - tolerance;
+            x0 = inter.end;
+            x1 = inter.end - error_data->tolerance;
         }
 
-        return secant(f, x0, x1, tolerance, max_iters, error);
+        return secant(f, x0, x1, error_data, profiler);
     }
 }

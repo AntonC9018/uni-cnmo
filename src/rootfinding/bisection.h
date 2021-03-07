@@ -4,37 +4,45 @@
 namespace Root_Finding
 {
     template<typename Function>
-    inline bool bisection_conditions_met(Function f, double start, double end)
+    inline bool bisection_conditions_met(const Function f, const Interval i)
     {
-        return start < end && signbit(f(start)) != signbit(f(end)); 
+        return i.start < i.end && signbit(f(i.start)) != signbit(f(i.end)); 
     }
 
     template<typename Function>
-    double bisection(Function f, double start, double end, 
-        double tolerance, size_t max_iters, bool* error)
+    double bisection(
+        const Function f, 
+        Interval inter, 
+        Error_Data* error_data, 
+        Profiler* profiler = &_std_profiler)
     {
-        RF_ERROR_IF_FALSE(bisection_conditions_met(f, start, end));
+        RF_INITIAL_CHECK(bisection_conditions_met(f, inter));
         size_t i = 0;
-        bool sign_start = signbit(f(start));
+        bool sign_start = signbit(f(inter.start));
 
-        while (i < max_iters)
+        while (i < error_data->max_iters)
         {
-            double middle = (start + end) / 2;
-            if (f(middle) < tolerance && (end - start) < tolerance * 2)
+            profiler->num_iters++;
+
+            double middle = (inter.start + inter.end) / 2;
+            double length = inter.end - inter.start;
+
+            if (f(middle) < error_data->tolerance 
+                && length < error_data->tolerance * 2)
             {
                 return middle;
             }
             if (signbit(f(middle)) == sign_start) 
             {
-                start = middle;
+                inter.start = middle;
             }
             else
             {
-                end = middle;
+                inter.end = middle;
             }
             i++;
         }
 
-        RF_ERROR();
+        RF_ITERATIONS_ERROR();
     }
 }

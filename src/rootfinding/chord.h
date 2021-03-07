@@ -4,31 +4,35 @@
 namespace Root_Finding
 {
     template<typename Function>
-    inline bool chord_conditions_met(Function f, double start, double end)
+    inline bool chord_conditions_met(const Function f, const Interval i)
     {
-        return signbit(f(start)) != signbit(f(end)); 
+        return signbit(f(i.start)) != signbit(f(i.end)); 
     }
 
     template<typename Function>
-    double chord(Function f, Function f_second_derivative, double start, double end, 
-        double tolerance, size_t max_iters, bool* error)
+    double chord(
+        const Function f, 
+        const Function f_second_derivative, 
+        const Interval inter, 
+        Error_Data* error_data, 
+        Profiler* profiler = &_std_profiler)
     {
-        RF_ERROR_IF_FALSE(chord_conditions_met(f, start, end));
+        RF_INITIAL_CHECK(chord_conditions_met(f, inter));
 
         // Whether the start is in the trough or outside one.
-        bool side_start = signbit(f(start)) == signbit(f_second_derivative(start));
+        bool side_start = signbit(f(inter.start)) == signbit(f_second_derivative(inter.start));
 
         // Always start in the trough.
-        double x     = side_start ? end : start;
+        double x = side_start ? inter.end : inter.start;
 
         // Rel stands for relative. The approximations 
         // are always calculated relative to this value.
-        double x_rel = side_start ? start : end;
+        double x_rel = side_start ? inter.start : inter.end;
         double f_rel = f(x_rel);
 
         size_t i = 0;
 
-        while (i < max_iters)
+        while (i < error_data->max_iters)
         {
             double f_x = f(x);
 
@@ -46,13 +50,16 @@ namespace Root_Finding
             */
             double dx = (x - x_rel) * f_x / (f_rel - f_x);
 
-            if (abs(f_x) < tolerance && abs(dx) < tolerance)
+            profiler->num_iters++;
+
+            if (abs(f_x) < error_data->tolerance 
+                && abs(dx) < error_data->tolerance)
                 return x;
             
             x += dx;
             i++;
         }
 
-        RF_ERROR();
+        RF_ITERATIONS_ERROR();
     }
 }

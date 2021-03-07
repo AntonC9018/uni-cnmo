@@ -36,30 +36,34 @@ int main()
         }
     }
 
-    bool error; double result;
+    Error_Data error_data;
+    error_data.error_message = STR_NULL;
+    error_data.max_iters = 1000;
+    error_data.tolerance = 0.00001;
+
+    double result;
     #define PRINT_RESULT(method_name) {\
         printf((method_name)); \
-        if (error)\
-            printf("An error has occured\n");\
+        if (!str_is_null(error_data.error_message))\
+            printf("An error has occured: %s\n", error_data.error_message.chars);\
         else\
             printf("Result is: %f\n", result);\
     }\
 
-    const double x0 = 0.5;
-    const double x1 = 1.5;
-    const double tolerance = 0.00001;
-    const double max_iters = 1000;
+    const Interval inter = { 0.5, 1.5 };
 
-    result = bisection(func, x0, x1, tolerance, max_iters, &error);
+    result = bisection(func, inter, &error_data);
     PRINT_RESULT("Bisection. ");
-    result = secant(func, x0, x1, tolerance, max_iters, &error);
+    result = secant(func, inter.start, inter.end, &error_data);
     PRINT_RESULT("Secant. ");
-    result = newton(func, func_derivative, x0, tolerance, max_iters, &error);
+    result = newton(func, func_derivative, inter.start, &error_data);
     PRINT_RESULT("Newton. ");
-    result = chord(func, func_second_derivative, x0, x1, tolerance, max_iters, &error);
+    result = chord(func, func_second_derivative, inter, &error_data);
     PRINT_RESULT("Chord. ");
-    result = secant_enhanced_start(func, func_second_derivative, x0, x1, tolerance, max_iters, &error);
+    result = secant_enhanced_start(func, func_second_derivative, inter, &error_data);
     PRINT_RESULT("Secant v2. ");
+    result = newton_enhanced_start(func, func_derivative, func_second_derivative, inter, &error_data);
+    PRINT_RESULT("Newton v2. ");
 
     return 0;
 }
