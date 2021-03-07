@@ -4,3 +4,6 @@
 [submodule "third_party/tinyexpr"]
 	path = third_party/tinyexpr
 	url = https://github.com/AntonC9018/tinyexpr
+[submodule "third_party/mydefines"]
+	path = third_party/mydefines
+	url = https://github.com/AntonC9018/mydefines
