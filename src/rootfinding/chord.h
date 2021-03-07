@@ -1,5 +1,5 @@
 #pragma once
-#include "util.h"
+#include "shared.h"
 
 namespace Root_Finding
 {

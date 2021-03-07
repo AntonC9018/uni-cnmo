@@ -1,6 +1,6 @@
 #pragma once
-#include <mydefines.h>
 #include <assert.h>
+#include "shared.h"
 
 namespace Poly
 {
@@ -14,11 +14,26 @@ namespace Poly
 
     inline Polynomial* p_alloc(u32 degree)
     {
-        printf("Allocating %zu.\n", sizeof(Polynomial) + sizeof(double) * degree);
         auto p = (Polynomial*) malloc(sizeof(Polynomial) + sizeof(double) * degree);
         p->degree = degree;
         return p;
     }
+
+    inline Polynomial* p_alloc_zeros(u32 degree)
+    {
+        auto p = (Polynomial*) calloc(1, sizeof(Polynomial) + sizeof(double) * degree);
+        p->degree = degree;
+        return p;
+    }
+
+    inline Polynomial* p_make(u32 degree, double coeffs[])
+    {
+        auto p = p_alloc(degree);
+        memcpy(p->coefficients, coeffs, degree * sizeof(double));
+        return p;
+    }
+
+#define POLY_MAKE_STATIC(args) p_make(sizeof((args)) / sizeof(double), (args))
 
     inline void p_destroy(Polynomial* poly)
     {

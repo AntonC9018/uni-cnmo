@@ -1,4 +1,10 @@
 #include "polynomial.h"
+#include "lagrange.h"
+
+double sin_(double t)
+{
+    return sin(t);
+}
 
 int main()
 {
@@ -32,4 +38,21 @@ int main()
 
     auto p3_inte = p_integrate(p3);
     p_print(p3); printf(" integral is "); p_print(p3_inte); printf("\n");
+
+    auto p3_approx = lagrange_approximate_function<Polynomial&>(*p3, 3, 1.0, 2.0);
+    p_print(p3_approx); printf("\n");
+
+
+    double coeffs[] { 1, 2, 3, 4, 5 };
+    auto p5 = POLY_MAKE_STATIC(coeffs);
+    p_print(p5); printf("\n");
+
+    auto p5_approx = lagrange_approximate_function<Polynomial&>(*p5, 5);
+    p_print(p5_approx); printf("\n");
+
+    auto p5_approx_chebyshev = lagrange_approximate_function_chebyshev_nodes<Polynomial&>(*p5, 5);
+    p_print(p5_approx_chebyshev); printf("\n");
+
+    auto p7_sin = lagrange_approximate_function_chebyshev_nodes(sin_, 7);
+    p_print(p7_sin); printf("\n");
 }
