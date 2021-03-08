@@ -4,15 +4,15 @@
 namespace Root_Finding
 {
     template<typename Function>
-    inline bool chord_conditions_met(const Function f, const Interval i)
+    inline bool chord_conditions_met(Function f, const Interval i)
     {
         return signbit(f(i.start)) != signbit(f(i.end)); 
     }
 
     template<typename Function>
     double chord(
-        const Function f, 
-        const Function f_second_derivative, 
+        Function f, 
+        Function f_second_derivative, 
         const Interval inter, 
         Error_Data* error_data, 
         Profiler* profiler = &_std_profiler)

@@ -62,7 +62,7 @@ namespace Poly
 
     template<typename Function>
     Polynomial* lagrange_approximate_function(
-        const Function f, 
+        Function f, 
         const size_t degree,
         const double start = 0.0, 
         const double step = 1.0)
@@ -87,7 +87,7 @@ namespace Poly
 
     template<typename Function>
     Polynomial* lagrange_approximate_function_chebyshev_nodes(
-        const Function f, 
+        Function f, 
         const size_t degree,
         const double start = -1.0, 
         const double end = 1.0)

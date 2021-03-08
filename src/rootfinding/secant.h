@@ -4,14 +4,14 @@
 namespace Root_Finding
 {
     template<typename Function>
-    inline bool secant_conditions_met(const Function f, const Interval i)
+    inline bool secant_conditions_met(Function f, const Interval i)
     {
         return f(i.start) != f(i.end);
     }
 
     template<typename Function>
     double secant(
-        const Function f, 
+        Function f, 
         const double x0, 
         const double x1, 
         Error_Data* error_data, 
@@ -43,8 +43,8 @@ namespace Root_Finding
 
     template<typename Function>
     double secant_enhanced_start(
-        const Function f, 
-        const Function f_second_derivative, 
+        Function f, 
+        Function f_second_derivative, 
         const Interval inter,
         Error_Data* error_data, 
         Profiler* profiler = &_std_profiler)

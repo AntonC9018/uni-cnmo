@@ -26,7 +26,7 @@ namespace Poly
     // and the values of the function at those x's as y's.
     template<typename Function>
     double* chebyshev_nodes(
-        const Function f, 
+        Function f, 
         const size_t degree,
         const double start = -1.0, 
         const double end = 1.0)
