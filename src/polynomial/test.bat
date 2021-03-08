@@ -1,1 +1,1 @@
-g++ test.cpp -I../../third_party/mydefines
+g++ -Wall test.cpp -I../../third_party/mydefines

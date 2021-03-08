@@ -9,7 +9,7 @@ namespace Poly
         u32 num_samples;
         double data[0];
 
-        inline double operator()(double x);
+        inline double operator()(double x) const;
     };
 
     inline Cubic_Spline* spline_alloc(const size_t num_samples)
@@ -36,7 +36,22 @@ namespace Poly
         return &(spline_coeffs(spline)[4 * i]);
     }
 
-    double spline_eval_ith(Cubic_Spline* spline, const u32 i, const double x)
+    inline const double* spline_xs(const Cubic_Spline* spline)
+    {
+        return spline->data;
+    }
+
+    inline const double* spline_coeffs(const Cubic_Spline* spline)
+    {
+        return spline->data + sizeof(double) * spline->num_samples;
+    }
+
+    inline const double* spline_coeffs_ith(const Cubic_Spline* spline, const u32 i)
+    {
+        return &(spline_coeffs(spline)[4 * i]);
+    }
+
+    double spline_eval_ith(const Cubic_Spline* spline, const u32 i, const double x)
     {
         const double* coeffs = spline_coeffs_ith(spline, i);
         const double xi = spline_xs(spline)[i];
@@ -50,7 +65,7 @@ namespace Poly
         return result;
     }
 
-    double spline_eval(Cubic_Spline* spline, const double x)
+    double spline_eval(const Cubic_Spline* spline, const double x)
     {
         const double* xs = spline_xs(spline);
         if (xs[0] > x) 
@@ -161,7 +176,7 @@ namespace Poly
         return spline;
     }
 
-    inline double Cubic_Spline::operator()(double x)
+    inline double Cubic_Spline::operator()(double x) const
     { 
         return spline_eval(this, x); 
     }

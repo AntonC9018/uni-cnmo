@@ -18,7 +18,6 @@ namespace Root_Finding
         Profiler* profiler = &_std_profiler)
     {
         size_t i = 0;
-        double x_prev   = x0;
         double x        = x1;
         double f_x_prev = f(x0);
         double dx       = x1 - x0;
@@ -33,7 +32,7 @@ namespace Root_Finding
                 return x;
 
             dx *= f_x / (f_x_prev - f_x);
-            x_prev = x; x += dx;
+            x += dx;
             f_x_prev = f_x; 
             i++;
         }
