@@ -9,7 +9,7 @@ namespace Poly
         u32 degree;
         double coefficients[0]; // flexible array
 
-        inline double operator()(double x);
+        inline double operator()(double x) const;
     };
 
     inline Polynomial* p_alloc(u32 degree)
@@ -113,7 +113,7 @@ namespace Poly
         }
     }
 
-    inline double Polynomial::operator()(double x) 
+    inline double Polynomial::operator()(double x) const
     { 
         return p_eval(this, x); 
     }

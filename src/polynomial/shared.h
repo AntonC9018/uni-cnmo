@@ -31,7 +31,7 @@ namespace Poly
         const double start = -1.0, 
         const double end = 1.0)
     {
-        double* xs = malloc(degree * 2 * sizeof(double));
+        double* xs = (double*)malloc(degree * 2 * sizeof(double));
         double* ys = &xs[degree];
 
         const double middle = (end + start) / 2;

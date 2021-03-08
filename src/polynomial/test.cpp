@@ -1,5 +1,6 @@
 #include "polynomial.h"
 #include "lagrange.h"
+#include "spline.h"
 
 double sin_(double t)
 {
@@ -55,4 +56,14 @@ int main()
 
     auto p7_sin = lagrange_approximate_function_chebyshev_nodes(sin_, 7);
     p_print(p7_sin); printf("\n");
+
+    printf("\n\n");
+    
+    double spline_xs[] { 0, 1, 2, 3, 4, 5 };
+    double spline_ys[] { 1, 3, -1, 5, 2, 1 };
+    auto spline = make_cubic_spline_normal(spline_xs, spline_ys, 6);
+    for (int i = 0; i < 6; i++)
+    {
+        printf("spline at %i is %f\n", i, spline_eval(spline, spline_xs[i] - 0.01));
+    }
 }
