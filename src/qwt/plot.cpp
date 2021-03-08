@@ -102,7 +102,10 @@ void Plot::zeros(
 {
     using namespace Root_Finding;
 
-    const double num_steps = 200.0;
+    if ((func->upper_bound - func->lower_bound) < error_data->tolerance)
+        return;
+
+    const double num_steps = 100.0;
     const double step = (func->upper_bound - func->lower_bound) / num_steps;
 
     auto zeros_xs_starts = localize(
@@ -143,13 +146,20 @@ void Plot::zeros(
         if (!str_is_null(error_data->error_message))
         {
             puts(error_data->error_message.chars);
+            _zeros[i]->hide();
         }
         else
         {
-            printf("Found a zero at %f.\n", estimate);
+            printf("Found a zero at %f. f'(%f) = %f, f''(%f) = %f\n", 
+                estimate, 
+                estimate, (*derivative)(estimate), 
+                estimate, (*second_derivative)(estimate)
+            );
             _zeros[i]->setValue(QPointF(estimate, (*func)(estimate)));
         }
     }
+    printf("\n");
+    replot();
 }
 
 void Plot::reset_number_of_zero_markers(size_t new_number)

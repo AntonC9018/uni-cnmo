@@ -69,23 +69,23 @@ MainWindow::MainWindow(QWidget *parent)
         ui->algorithm_combo->addItem(option_text[i].chars);
     }
 
-    connect(this,
-            SIGNAL(selected_function_changed()),
-            this,
-            SLOT(changed_function_redraw_graph())
-    );
+    connect(this, SIGNAL(selected_function_changed()),
+            this, SLOT(changed_function_redraw_graph()));
 
-    connect(this,
-            SIGNAL(upper_bound_changed()),
-            this,
-            SLOT(changed_function_redraw_graph())
-    );
+    connect(this, SIGNAL(selected_function_changed()),
+            this, SLOT(reestimate_zeros()));
+
+    connect(this, SIGNAL(upper_bound_changed()),
+            this, SLOT(changed_function_redraw_graph()));
+
+    connect(this, SIGNAL(upper_bound_changed()), 
+            this, SLOT(reestimate_zeros()));
     
-    connect(this,
-            SIGNAL(lower_bound_changed()),
-            this,
-            SLOT(changed_function_redraw_graph())
-    );
+    connect(this, SIGNAL(lower_bound_changed()),
+            this, SLOT(changed_function_redraw_graph()));
+
+    connect(this, SIGNAL(lower_bound_changed()), 
+            this, SLOT(reestimate_zeros()));
 
     connect(ui->function_custom_rbutton,
             SIGNAL(toggled(bool)),
@@ -127,7 +127,7 @@ void MainWindow::change_selected_builtin_function(int index)
     {
         selected_builtin_function = &Builtin::funcs[index];
 
-        puts(selected_builtin_function->text.chars);
+        // puts(selected_builtin_function->text.chars);
 
         if (ui->function_builtin_rbutton->isChecked())
             emit selected_function_changed();
@@ -198,7 +198,6 @@ void MainWindow::change_lower_bound(double value)
 
 void MainWindow::changed_function_redraw_graph()
 {
-    puts(get_selected_function()->text.chars);
     ui->plot->update_curve(get_selected_function());
 }
 

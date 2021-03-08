@@ -1,0 +1,1 @@
+gcc -Wall -O2 -c ./third_party/tinyexpr/tinyexpr.c -o ./third_party/tinyexpr/tinyexpr.o
