@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Setup builtin functions
     {
         using namespace Builtin;
-
+        
         for (int i = 0; i < func_count; i++)
         {
             ui->function_selection_combo->addItem(
@@ -67,9 +67,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->algorithm_combo->addItem("Secant");
     ui->algorithm_combo->addItem("Chord");
 
-    // Draw some function
-    ui->plot->updateCurve(&Builtin::funcs[0]);
-
     connect(this,
             SIGNAL(selected_function_changed()),
             this,
@@ -93,6 +90,8 @@ MainWindow::MainWindow(QWidget *parent)
             this,
             SLOT(changed_function_redraw_graph())
     );
+
+    ui->function_selection_combo->setCurrentIndex(1);
 }
 
 MainWindow::~MainWindow()
@@ -128,6 +127,7 @@ void MainWindow::change_selected_custom_function()
     int error = 0;
 
     te_free(selected_custom_function.expr);
+    selected_custom_function.expr = NULL;
 
     if (qstr_utf8 != "")
     {
@@ -186,5 +186,5 @@ void MainWindow::change_lower_bound(double value)
 void MainWindow::changed_function_redraw_graph()
 {
     puts(get_selected_function()->text.chars);
-    ui->plot->updateCurve(get_selected_function());
+    ui->plot->update_curve(get_selected_function());
 }

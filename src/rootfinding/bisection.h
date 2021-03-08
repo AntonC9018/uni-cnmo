@@ -4,14 +4,14 @@
 namespace Root_Finding
 {
     template<typename Function>
-    inline bool bisection_conditions_met(Function f, const Interval i)
+    inline bool bisection_conditions_met(Function& f, const Interval i)
     {
         return i.start < i.end && signbit(f(i.start)) != signbit(f(i.end)); 
     }
 
     template<typename Function>
     double bisection(
-        Function f, 
+        Function& f, 
         Interval inter, 
         Error_Data* error_data, 
         Profiler* profiler = &_std_profiler)

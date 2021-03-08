@@ -64,6 +64,6 @@ int main()
     auto spline = make_cubic_spline_normal(spline_xs, spline_ys, 6);
     for (int i = 0; i < 6; i++)
     {
-        printf("spline at %i is %f\n", i, spline_eval(spline, spline_xs[i] - 0.01));
+        printf("spline at %i is %f\n", i, spline_eval(spline, spline_xs[i]));
     }
 }

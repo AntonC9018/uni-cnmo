@@ -8,6 +8,8 @@ namespace Poly
     {
         u32 num_samples;
         double data[0];
+
+        inline double operator()(double x);
     };
 
     inline Cubic_Spline* spline_alloc(const size_t num_samples)
@@ -50,14 +52,14 @@ namespace Poly
 
     double spline_eval(Cubic_Spline* spline, const double x)
     {
-        const double*  xs = spline_xs(spline);
+        const double* xs = spline_xs(spline);
         if (xs[0] > x) 
         {
             return 0;
         }
         for (u32 i = 1; i < spline->num_samples; i++)
         {
-            if (xs[i] > x)
+            if (xs[i] >= x)
             {
                 return spline_eval_ith(spline, i - 1, x);
             }
@@ -157,5 +159,10 @@ namespace Poly
         free(temp_values);
 
         return spline;
+    }
+
+    inline double Cubic_Spline::operator()(double x)
+    { 
+        return spline_eval(this, x); 
     }
 } 

@@ -33,13 +33,13 @@ namespace Root_Finding
 
     // Numerically differentiate function f at point x with step delta
     template<typename Function>
-    inline double differentiate(Function f, double x, double delta)
+    inline double differentiate(Function& f, double x, double delta)
     {
         return (f(x + delta) - f(x)) / delta;
     }
 
     template<typename Function>
-    std::vector<double> localize(Function f, double start, double end, double step)
+    std::vector<double> localize(Function& f, double start, double end, double step)
     {
         std::vector<double> result;
 

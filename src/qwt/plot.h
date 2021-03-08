@@ -10,12 +10,13 @@
 #include <qwt_plot_textlabel.h>
 #include <qwt_plot_zoneitem.h>
 #include <qwt_plot_curve.h>
-#include <qwt_plot_layout.h>
+#include <qwt_plot_marker.h>
 #include <qwt_scale_widget.h>
 #include <qwt_symbol.h>
 #include <qwt_plot_scaleitem.h>
 
 #include "curvetracker.h"
+#include "../func.h"
 
 class Plot: public QwtPlot
 {
@@ -24,15 +25,21 @@ class Plot: public QwtPlot
 public:
     explicit Plot(QWidget * parent = NULL);
 
-    void updateCurve(Func* func);
+    void update_curve(Func* func);
+
+    void zeros(Func* func);
 
 private:
-    QwtPlotScaleItem zero_scale;
-    QwtPlotCanvas canvas;
-    QwtPlotTextLabel label;
-    QwtPlotGrid grid;
-    QwtPlotCurve curve;
-    CurveTracker tracker;
+    QwtPlotScaleItem _zero_scale;
+    QwtPlotCanvas _canvas;
+    QwtPlotTextLabel _label;
+    QwtPlotGrid _grid;
+    QwtPlotCurve _curve;
+    CurveTracker _tracker;
+
+    std::vector<QwtPlotMarker*> _zeros;
+    void reset_number_of_zero_markers(size_t new_size);
+
 };
 
 #endif
