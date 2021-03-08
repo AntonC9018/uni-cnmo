@@ -60,7 +60,7 @@ Plot::Plot(QWidget *parent)
     }
 }
 
-void Plot::update_curve(Func* func)
+void Plot::update_curve(Expression_Func* func)
 {
     const size_t num_points = 1000;
     const double LEEWAY_Y_PERC = 0.1;
@@ -88,43 +88,65 @@ void Plot::update_curve(Func* func)
         min_y -= y / 2;
     }
 
-    zeros(func);
-
     setAxisScale(QwtPlot::yLeft, min_y - leeway_y, max_y + leeway_y);
     setAxisScale(QwtPlot::xBottom, func->lower_bound - leeway_x, func->upper_bound + leeway_x);
     replot();
 }
 
-void Plot::zeros(Func* func)
+void Plot::zeros(
+    Expression_Func* func, 
+    Root_Finding::Error_Data* error_data, 
+    Root_Finding::Option option,
+    Derivative_Expression_Func* derivative,
+    Derivative_Expression_Func* second_derivative)
 {
-    const double num_steps = 200.0;
-    double step = (func->upper_bound - func->lower_bound) / num_steps;
+    using namespace Root_Finding;
 
-    auto zeros_xs_starts = Root_Finding::localize<Func&>(
+    const double num_steps = 200.0;
+    const double step = (func->upper_bound - func->lower_bound) / num_steps;
+
+    auto zeros_xs_starts = localize(
         *func, func->lower_bound, func->upper_bound, step);
 
     reset_number_of_zero_markers(zeros_xs_starts.size());
 
     for (size_t i = 0; i < zeros_xs_starts.size(); i++)
     {
-        Root_Finding::Error_Data error_data;
-        error_data.error_message = STR_NULL;
-        error_data.max_iters = 1000;
-        error_data.tolerance = 0.0001;
+        error_data->error_message = STR_NULL;
+        const double x = zeros_xs_starts[i];
+        double estimate;
 
-        auto estimate = Root_Finding::bisection<Func&>(
-            *func, 
-            { zeros_xs_starts[i], zeros_xs_starts[i] + step },
-            &error_data
-        );
-
-        if (!str_is_null(error_data.error_message))
+        switch (option)
         {
-            puts(error_data.error_message.chars);
+        case BISECTION:
+            estimate = bisection(
+                *func, { x, x + step }, error_data
+            );
+            break;
+        case CHORD:
+            estimate = chord(
+                *func, *second_derivative, { x, x + step }, error_data
+            );
+            break;
+        case NEWTON:
+            estimate = newton_enhanced_start(
+                *func, *derivative, *second_derivative, { x, x + step }, error_data
+            );
+            break;
+        case SECANT:
+            estimate = secant_enhanced_start(
+                *func, *second_derivative, { x, x + step }, error_data
+            );
+            break;
+        }
+
+        if (!str_is_null(error_data->error_message))
+        {
+            puts(error_data->error_message.chars);
         }
         else
         {
-            printf("Found a zero at %f.", estimate);
+            printf("Found a zero at %f.\n", estimate);
             _zeros[i]->setValue(QPointF(estimate, (*func)(estimate)));
         }
     }

@@ -9,10 +9,10 @@ namespace Root_Finding
         return signbit(f(i.start)) != signbit(f(i.end)); 
     }
 
-    template<typename Function>
+    template<typename Function, typename Derivative>
     double chord(
         Function& f, 
-        Function& f_second_derivative, 
+        Derivative& f_second_derivative, 
         const Interval inter, 
         Error_Data* error_data, 
         Profiler* profiler = &_std_profiler)

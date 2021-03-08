@@ -40,10 +40,10 @@ namespace Root_Finding
         RF_ITERATIONS_ERROR();
     }
 
-    template<typename Function>
+    template<typename Function, typename Derivative>
     double secant_enhanced_start(
         Function& f, 
-        Function& f_second_derivative, 
+        Derivative& f_second_derivative, 
         const Interval inter,
         Error_Data* error_data, 
         Profiler* profiler = &_std_profiler)

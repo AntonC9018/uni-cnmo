@@ -45,12 +45,15 @@ set(SUBMODULES_DIRECTORY ${CMAKE_SOURCE_DIR}/third_party)
 
 
 set(PROJECT_SOURCES
+
     src/main.cpp
     src/mainwindow.cpp
     src/mainwindow.h
     src/mainwindow.ui
+
     src/qwt/curvetracker.cpp
     src/qwt/plot.cpp
+
     ${SUBMODULES_DIRECTORY}/strlib/strlib.cpp
 )
 
@@ -63,7 +66,6 @@ set(PROJECT_SOURCES
 # Remove Qwt's deprecation warnings
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wno-deprecated-declarations")
 
-# Tinyexpr with differentiation
 add_executable(cnmo ${PROJECT_SOURCES})
 
 target_link_libraries(cnmo PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
@@ -74,16 +76,24 @@ target_link_libraries(cnmo PRIVATE
     ${ONE_LIBS_DIRECTORY}/qwt/libqwtd.a 
     ${ONE_LIBS_DIRECTORY}/qwt/libqwtmathml.a
     ${ONE_LIBS_DIRECTORY}/qwt/libqwtmathmld.a
+
+    # tinyexpr is already precompiled with -O2
+    # I do not yet know how to compile things separately with CMake.
     ${SUBMODULES_DIRECTORY}/tinyexpr/tinyexpr.o
 )
 
 # I store includes (header files / header file libraries) next to libs.
 include_directories(cnmo PUBLIC ../includes)
+
 # Qwt is also there in my case
 include_directories(cnmo PUBLIC ../includes/qwt)
+
 # Include some local dirs so that ui compiler works correctly 
 include_directories(cnmo PUBLIC  src/qwt)
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY})
+
 # Include my strlib library
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/strlib)
+
+# Expression parsing
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/tinyexpr)

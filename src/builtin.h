@@ -7,7 +7,7 @@
 
 namespace Builtin
 {
-    static Func funcs[]
+    static Expression_Func funcs[]
     {
         func_make(str_lit("2 * sin(3 * x) - ln(x^3 - 1) + 4"), 2, 9),
         func_make(str_lit("sin(pi * x / 6) - cos(x - 1)"), -7, 8),

@@ -6,7 +6,7 @@
 
 #define Vector_Type QVector<double>
 
-struct Func
+struct Expression_Func
 {
     str_view_t text;
     te_expr* expr;
@@ -18,20 +18,20 @@ struct Func
     inline double operator()(double x);
 };
 
-inline double Func::operator()(double x)
+inline double Expression_Func::operator()(double x)
 {
     this->x = x;
     return te_eval(this->expr);
 }
 
-inline void func_compile(Func* func, int* error = NULL)
+inline void func_compile(Expression_Func* func, int* error = NULL)
 {
     func->expr = te_compile(func->text.chars, &func->variable, 1, error);
 }
 
-inline Func func_make(str_view_t text, double lower, double upper, int* error = NULL)
+inline Expression_Func func_make(str_view_t text, double lower, double upper, int* error = NULL)
 {
-    Func func;
+    Expression_Func func;
     func.text        = text;
     func.variable    = { "x", &func.x };
     func.lower_bound = lower;
@@ -40,7 +40,7 @@ inline Func func_make(str_view_t text, double lower, double upper, int* error = 
     return func;
 }
 
-inline Vector_Type func_eval(Func* func, const Vector_Type& inputs)
+inline Vector_Type func_eval(Expression_Func* func, const Vector_Type& inputs)
 {
     Vector_Type result(inputs.size());
 
@@ -58,7 +58,7 @@ struct Inputs_And_Outputs
     Vector_Type outputs;
 };
 
-inline Inputs_And_Outputs func_eval_range(Func* func, size_t num_evals)
+inline Inputs_And_Outputs func_eval_range(Expression_Func* func, size_t num_evals)
 {
     double step = (func->upper_bound - func->lower_bound) / num_evals;
 
@@ -76,4 +76,17 @@ inline Inputs_And_Outputs func_eval_range(Func* func, size_t num_evals)
     }
 
     return result;
+}
+
+struct Derivative_Expression_Func
+{
+    Expression_Func* initial_func;
+    te_expr* expr;
+    inline double operator()(double x);
+};
+
+inline double Derivative_Expression_Func::operator()(double x)
+{
+    this->initial_func->x = x;
+    return te_eval(this->expr);
 }

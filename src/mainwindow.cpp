@@ -62,10 +62,12 @@ MainWindow::MainWindow(QWidget *parent)
     );
 
     // Algorithms
-    ui->algorithm_combo->addItem("Bisection");
-    ui->algorithm_combo->addItem("Newton");
-    ui->algorithm_combo->addItem("Secant");
-    ui->algorithm_combo->addItem("Chord");
+    using namespace Root_Finding;
+
+    for (size_t i = 0; i < countof(option_text); i++)
+    {
+        ui->algorithm_combo->addItem(option_text[i].chars);
+    }
 
     connect(this,
             SIGNAL(selected_function_changed()),
@@ -91,6 +93,18 @@ MainWindow::MainWindow(QWidget *parent)
             SLOT(changed_function_redraw_graph())
     );
 
+    connect(ui->precision_spin_box,
+            SIGNAL(valueChanged(double)),
+            this,
+            SLOT(reestimate_zeros())
+    );
+    
+    connect(ui->algorithm_combo,
+            SIGNAL(currentIndexChanged(int)),
+            this,
+            SLOT(reestimate_zeros())
+    );
+
     ui->function_selection_combo->setCurrentIndex(1);
 }
 
@@ -99,7 +113,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-Func* MainWindow::get_selected_function()
+Expression_Func* MainWindow::get_selected_function()
 {
     if (ui->function_custom_rbutton->isChecked())
         return &selected_custom_function;
@@ -182,9 +196,37 @@ void MainWindow::change_lower_bound(double value)
     }
 }
 
-
 void MainWindow::changed_function_redraw_graph()
 {
     puts(get_selected_function()->text.chars);
     ui->plot->update_curve(get_selected_function());
+}
+
+void MainWindow::reestimate_zeros()
+{
+    using namespace Root_Finding;
+
+    auto selected_function = get_selected_function();
+
+    // Let's calculate the derivative here for now
+    // I know this code looks REALLY scuffed, however, in order to clean this up
+    // I'd have to spend A LOT of extra time, which is not worth it for this project.
+    Derivative_Expression_Func derivative = {
+        selected_function,
+        te_differentiate_symbolically(selected_function->expr, &selected_function->variable, NULL)
+    };
+    Derivative_Expression_Func second_derivative = {
+        selected_function,
+        te_differentiate_symbolically(derivative.expr, &selected_function->variable, NULL)
+    };
+
+    Error_Data error_data;
+    error_data.error_message = STR_NULL;
+    error_data.max_iters = 1000;
+    error_data.tolerance = pow(10, ui->precision_spin_box->value());
+
+    ui->plot->zeros(selected_function, &error_data, 
+        (Option)ui->algorithm_combo->currentIndex(), &derivative, &second_derivative);
+
+    te_free(derivative.expr); te_free(second_derivative.expr);
 }

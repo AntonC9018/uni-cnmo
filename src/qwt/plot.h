@@ -17,6 +17,8 @@
 
 #include "curvetracker.h"
 #include "../func.h"
+#include "../rootfinding/shared.h"
+#include "../rootfinding/option.h"
 
 class Plot: public QwtPlot
 {
@@ -25,9 +27,15 @@ class Plot: public QwtPlot
 public:
     explicit Plot(QWidget * parent = NULL);
 
-    void update_curve(Func* func);
+    void update_curve(Expression_Func* func);
 
-    void zeros(Func* func);
+    void zeros(
+        Expression_Func* func, 
+        Root_Finding::Error_Data* error_data, 
+        Root_Finding::Option option,
+        Derivative_Expression_Func* derivative = NULL,
+        Derivative_Expression_Func* second_derivative = NULL
+    );
 
 private:
     QwtPlotScaleItem _zero_scale;

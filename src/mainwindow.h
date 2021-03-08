@@ -2,8 +2,10 @@
 #include <QMainWindow>
 #include <QComboBox>
 #include <strlib.h>
-#include "qwt/plot.h"
+
 #include "func.h"
+#include "qwt/plot.h"
+#include "rootfinding/option.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,17 +22,20 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    Func* selected_builtin_function;
+    Expression_Func* selected_builtin_function;
     
     str_t custom_function_str;
-    Func selected_custom_function;
+    Expression_Func selected_custom_function;
 
     // Returns the custom selected function or the builtin function
     // depending on the current selection.
-    Func* get_selected_function();
+    Expression_Func* get_selected_function();
+
+    Root_Finding::Option root_finding_option;
 
 signals:
     void selected_function_changed();
+    void selected_method_changed();
     void upper_bound_changed();
     void lower_bound_changed();
 
@@ -40,4 +45,5 @@ public slots:
     void change_upper_bound(double value);
     void change_lower_bound(double value);
     void changed_function_redraw_graph();
+    void reestimate_zeros();
 };
