@@ -104,6 +104,8 @@ MainWindow::MainWindow(QWidget *parent)
     );
 
     ui->function_selection_combo->setCurrentIndex(1);
+
+    ui->zeros_list->setModel(&zeros_model);
 }
 
 MainWindow::~MainWindow()
@@ -116,7 +118,7 @@ Expression_Func* MainWindow::get_selected_function()
     if (ui->function_custom_rbutton->isChecked())
         return &selected_custom_function;
     else
-        return selected_builtin_function; 
+        return selected_builtin_function;
 }
 
 void MainWindow::change_selected_builtin_function(int index)
@@ -217,32 +219,20 @@ void MainWindow::reestimate_zeros()
             selected_function, &error_data, ui->algorithm_combo->currentIndex()
         );
 
-        auto children = ui->zeros_table->children();
-        auto current_number = children.count();
+        auto current_number = zeros_model.rowCount();
         auto new_number = new_zeros.size();
 
-
-        // Add more markers, if the current amount does not suffice.
-        for (size_t i = current_number; i < new_number; i++)
+        if (new_number > current_number)
         {
-            auto row = new QLabel(*ui->zeros_table);
-            row->
+            zeros_model.insertRows(current_number, new_number - current_number);
+        } 
+        else if (current_number > new_number)
+        {
+            zeros_model.removeRows(new_number, current_number - new_number);
         }
-        // Show all active markers
-        for (size_t i = 0; i < new_number; i++)
+        for (int i = 0; i < new_number; i++)
         {
-            _zeros[i]->show();
-        }
-        // Hide marker excess.
-        for (size_t i = new_number; i < current_number; i++)
-        {
-            _zeros[i]->hide();
-        }
-
-
-        for (size_t i = current_zeros_count; i < new_zeros_count; i++)
-        {
-
+            zeros_model.setData(zeros_model.index(i), QVariant(new_zeros[i]));
         }
     }
 }

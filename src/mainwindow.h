@@ -1,6 +1,7 @@
 #pragma once
 #include <QMainWindow>
 #include <QComboBox>
+#include <QStringListModel>
 #include <strlib.h>
 
 #include "func.h"
@@ -30,6 +31,8 @@ private:
     // Returns the custom selected function or the builtin function
     // depending on the current selection.
     Expression_Func* get_selected_function();
+
+    QStringListModel zeros_model;
 
 signals:
     void selected_function_changed();
