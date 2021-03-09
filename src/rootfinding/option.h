@@ -2,28 +2,15 @@
 #include <strlib.h>
 #include <mydefines.h>
 
-#include "../rootfinding/shared.h"
-#include "../rootfinding/bisection.h"
-#include "../rootfinding/newton.h"
-#include "../rootfinding/secant.h"
-#include "../rootfinding/chord.h"
-#include "../func.h"
+#include "shared.h"
+#include "bisection.h"
+#include "newton.h"
+#include "secant.h"
+#include "chord.h"
+#include <func/func.h>
 
 namespace Root_Finding
 {
-    struct Derivative_Expression_Func
-    {
-        double* x;
-        te_expr* expr;
-        inline double operator()(double x);
-    };
-
-    inline double Derivative_Expression_Func::operator()(double x)
-    {
-        *this->x = x;
-        return te_eval(this->expr);
-    }
-
 #define ADAPTOR_PARAMS Expression_Func* f, Interval inter, Error_Data* error_data, Profiler* profiler = &_std_profiler
 #define DER(f) ([=](double x) { return func_eval_derivative((f), x); }) 
 #define SECOND_DER(f) ([=](double x) { return func_eval_second_derivative((f), x); })

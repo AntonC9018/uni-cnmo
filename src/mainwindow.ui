@@ -228,9 +228,9 @@
            <enum>QLayout::SetMaximumSize</enum>
           </property>
           <item>
-           <widget class="QListView" name="zeros-list">
+           <widget class="QTableView" name="zeros-table">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Maximum" vsizetype="MinimumExpanding">
+             <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -238,12 +238,15 @@
             <property name="alternatingRowColors">
              <bool>true</bool>
             </property>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>70</number>
+            </attribute>
            </widget>
           </item>
           <item>
            <widget class="Plot" name="plot" native="true">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
               <horstretch>10</horstretch>
               <verstretch>10</verstretch>
              </sizepolicy>

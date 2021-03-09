@@ -2,7 +2,7 @@
 
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
-#include "builtin.h"
+#include <func/builtin.h>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -105,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->function_selection_combo->setCurrentIndex(1);
 
-    ui->zeros_list->setModel(&zeros_model);
+    ui->zeros_table->setModel(&zeros_model);
 }
 
 MainWindow::~MainWindow()
@@ -219,20 +219,6 @@ void MainWindow::reestimate_zeros()
             selected_function, &error_data, ui->algorithm_combo->currentIndex()
         );
 
-        auto current_number = zeros_model.rowCount();
-        auto new_number = new_zeros.size();
-
-        if (new_number > current_number)
-        {
-            zeros_model.insertRows(current_number, new_number - current_number);
-        } 
-        else if (current_number > new_number)
-        {
-            zeros_model.removeRows(new_number, current_number - new_number);
-        }
-        for (int i = 0; i < new_number; i++)
-        {
-            zeros_model.setData(zeros_model.index(i), QVariant(new_zeros[i]));
-        }
+        zeros_model.swap_data(new_zeros);
     }
 }

@@ -16,9 +16,10 @@
 #include <qwt_plot_scaleitem.h>
 
 #include "curvetracker.h"
-#include "../func.h"
-#include "../rootfinding/shared.h"
-#include "../rootfinding/option.h"
+#include <func/func.h>
+#include "../shared.h"
+#include "../option.h"
+#include "zeros_table_row.h"
 
 class Plot: public QwtPlot
 {
@@ -29,7 +30,7 @@ public:
 
     void update_curve(Expression_Func* func);
 
-    std::vector<double> zeros(
+    std::vector<Zeros_Table_Row> zeros(
         Expression_Func* func, 
         Root_Finding::Error_Data* error_data, 
         size_t option_index

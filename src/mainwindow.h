@@ -4,9 +4,10 @@
 #include <QStringListModel>
 #include <strlib.h>
 
-#include "func.h"
-#include "qwt/plot.h"
+#include <func/func.h>
 #include "rootfinding/option.h"
+#include "rootfinding/ui/plot.h"
+#include "rootfinding/ui/zeros_table_model.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -32,7 +33,7 @@ private:
     // depending on the current selection.
     Expression_Func* get_selected_function();
 
-    QStringListModel zeros_model;
+    Zeros_Table_Model zeros_model;
 
 signals:
     void selected_function_changed();

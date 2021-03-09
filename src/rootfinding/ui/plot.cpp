@@ -1,7 +1,7 @@
 #include "plot.h"
 #include <algorithm>
 
-#include "../builtin.h"
+#include <func/builtin.h>
 
 Plot::Plot(QWidget *parent)
     : QwtPlot(parent)
@@ -88,12 +88,12 @@ void Plot::update_curve(Expression_Func* func)
     replot();
 }
 
-std::vector<double> Plot::zeros(
+std::vector<Zeros_Table_Row> Plot::zeros(
     Expression_Func* func, 
     Root_Finding::Error_Data* error_data, 
     size_t option_index)
 {
-    std::vector<double> x_approxs;
+    std::vector<Zeros_Table_Row> x_approxs;
 
     if ((func->upper_bound - func->lower_bound) < error_data->tolerance)
         return x_approxs;
@@ -105,11 +105,13 @@ std::vector<double> Plot::zeros(
 
     reset_number_of_zero_markers(zeros_xs.size());
 
-    Profiler profiler; profiler_start(&profiler);
-    printf("%s method started.\n", option_text[option_index].chars);
+    // printf("%s method started.\n", option_text[option_index].chars);
 
     for (size_t i = 0; i < zeros_xs.size(); i++)
     {
+        Profiler profiler; 
+        profiler_start(&profiler);
+
         error_data->error_message = STR_NULL; // Reset the previous error
         const double x = zeros_xs[i];
 
@@ -119,19 +121,26 @@ std::vector<double> Plot::zeros(
 
         if (!str_is_null(error_data->error_message))
         {
-            puts(error_data->error_message.chars);
             _zeros[i]->hide();
         }
         else
         {
-            printf("Found a zero at %f.\n", approx);
-            _zeros[i]->setValue(QPointF(approx, (*func)(approx)));
-            x_approxs.push_back(approx);
-        }
+            const double y = func_eval(func, approx);
 
+            _zeros[i]->setValue(QPointF(approx, y));
+
+            profiler_stop(&profiler);
+
+            Zeros_Table_Row row;
+            row.x = approx;
+            row.y = y;
+            row.microsecs = profiler.time_elapsed.count();
+            row.num_iters = profiler.num_iters;
+
+            x_approxs.push_back(row);
+        }
     }
 
-    profiler_report_nicely(stdout, &profiler);
     replot(); // Render the updated markers
 
     return x_approxs;

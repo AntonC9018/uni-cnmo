@@ -51,8 +51,10 @@ set(PROJECT_SOURCES
     src/mainwindow.h
     src/mainwindow.ui
 
-    src/qwt/curvetracker.cpp
-    src/qwt/plot.cpp
+    src/rootfinding/ui/zeros_table_model.cpp
+    src/rootfinding/ui/zeros_table_model.h
+    src/rootfinding/ui/curvetracker.cpp
+    src/rootfinding/ui/plot.cpp
 
     ${SUBMODULES_DIRECTORY}/strlib/strlib.cpp
 )
@@ -89,7 +91,8 @@ include_directories(cnmo PUBLIC ../includes)
 include_directories(cnmo PUBLIC ../includes/qwt)
 
 # Include some local dirs so that ui compiler works correctly 
-include_directories(cnmo PUBLIC  src/qwt)
+include_directories(cnmo PUBLIC  src/rootfinding/ui)
+include_directories(cnmo PUBLIC  src)
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY})
 
 # Include my libraries
