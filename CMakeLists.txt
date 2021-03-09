@@ -92,8 +92,9 @@ include_directories(cnmo PUBLIC ../includes/qwt)
 include_directories(cnmo PUBLIC  src/qwt)
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY})
 
-# Include my strlib library
+# Include my libraries
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/strlib)
+include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/mydefines)
 
 # Expression parsing
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/tinyexpr)

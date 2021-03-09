@@ -2,11 +2,6 @@
 #include <algorithm>
 
 #include "../builtin.h"
-#include "../rootfinding/shared.h"
-#include "../rootfinding/bisection.h"
-#include "../rootfinding/newton.h"
-#include "../rootfinding/secant.h"
-#include "../rootfinding/chord.h"
 
 Plot::Plot(QWidget *parent)
     : QwtPlot(parent)
@@ -93,55 +88,34 @@ void Plot::update_curve(Expression_Func* func)
     replot();
 }
 
-void Plot::zeros(
+std::vector<double> Plot::zeros(
     Expression_Func* func, 
     Root_Finding::Error_Data* error_data, 
-    Root_Finding::Option option,
-    Derivative_Expression_Func* derivative,
-    Derivative_Expression_Func* second_derivative)
+    size_t option_index)
 {
-    using namespace Root_Finding;
+    std::vector<double> x_approxs;
 
     if ((func->upper_bound - func->lower_bound) < error_data->tolerance)
-        return;
+        return x_approxs;
 
+    using namespace Root_Finding;
     const double num_steps = 100.0;
     const double step = (func->upper_bound - func->lower_bound) / num_steps;
+    auto zeros_xs = localize(*func, func->lower_bound, func->upper_bound, step);
 
-    auto zeros_xs_starts = localize(
-        *func, func->lower_bound, func->upper_bound, step);
+    reset_number_of_zero_markers(zeros_xs.size());
 
-    reset_number_of_zero_markers(zeros_xs_starts.size());
+    Profiler profiler; profiler_start(&profiler);
+    printf("%s method started.\n", option_text[option_index].chars);
 
-    for (size_t i = 0; i < zeros_xs_starts.size(); i++)
+    for (size_t i = 0; i < zeros_xs.size(); i++)
     {
-        error_data->error_message = STR_NULL;
-        const double x = zeros_xs_starts[i];
-        double estimate;
+        error_data->error_message = STR_NULL; // Reset the previous error
+        const double x = zeros_xs[i];
 
-        switch (option)
-        {
-        case BISECTION:
-            estimate = bisection(
-                *func, { x, x + step }, error_data
-            );
-            break;
-        case CHORD:
-            estimate = chord(
-                *func, *second_derivative, { x, x + step }, error_data
-            );
-            break;
-        case NEWTON:
-            estimate = newton_enhanced_start(
-                *func, *derivative, *second_derivative, { x, x + step }, error_data
-            );
-            break;
-        case SECANT:
-            estimate = secant_enhanced_start(
-                *func, *second_derivative, { x, x + step }, error_data
-            );
-            break;
-        }
+        double approx = option_adaptors[option_index](
+            func, { x, x + step }, error_data, &profiler
+        );
 
         if (!str_is_null(error_data->error_message))
         {
@@ -150,16 +124,17 @@ void Plot::zeros(
         }
         else
         {
-            printf("Found a zero at %f. f'(%f) = %f, f''(%f) = %f\n", 
-                estimate, 
-                estimate, (*derivative)(estimate), 
-                estimate, (*second_derivative)(estimate)
-            );
-            _zeros[i]->setValue(QPointF(estimate, (*func)(estimate)));
+            printf("Found a zero at %f.\n", approx);
+            _zeros[i]->setValue(QPointF(approx, (*func)(approx)));
+            x_approxs.push_back(approx);
         }
+
     }
-    printf("\n");
-    replot();
+
+    profiler_report_nicely(stdout, &profiler);
+    replot(); // Render the updated markers
+
+    return x_approxs;
 }
 
 void Plot::reset_number_of_zero_markers(size_t new_number)
@@ -168,10 +143,12 @@ void Plot::reset_number_of_zero_markers(size_t new_number)
     // Add more markers, if the current amount does not suffice.
     for (size_t i = current_number; i < new_number; i++)
     {
+        const QSize marker_size = QSize(8, 8);
+
         auto* marker = new QwtPlotMarker();
         _zeros.push_back(marker);
-        // This functions does take ownership of the symbol
-        marker->setSymbol(new QwtSymbol(QwtSymbol::Diamond, Qt::red, Qt::NoPen, QSize(5, 5)));
+        // This functions DOES take ownership of the symbol, even though it takes in a const*
+        marker->setSymbol(new QwtSymbol(QwtSymbol::Diamond, Qt::red, Qt::NoPen, marker_size));
         marker->attach(this);
     }
     // Show all active markers

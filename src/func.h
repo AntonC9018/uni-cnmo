@@ -10,23 +10,32 @@ struct Expression_Func
 {
     str_view_t text;
     te_expr* expr;
-    te_variable variable;
+    te_expr* derivative;
+    te_expr* second_derivative;
     double x;
+    te_variable variable;
     double upper_bound;
     double lower_bound;
 
     inline double operator()(double x);
 };
 
-inline double Expression_Func::operator()(double x)
-{
-    this->x = x;
-    return te_eval(this->expr);
-}
-
 inline void func_compile(Expression_Func* func, int* error = NULL)
 {
     func->expr = te_compile(func->text.chars, &func->variable, 1, error);
+    
+    if (!error || !(*error))
+    {
+        func->derivative = te_differentiate_symbolically(func->expr, &func->variable, error);
+        func->second_derivative = te_differentiate_symbolically(func->derivative, &func->variable, error);
+    }
+}
+
+inline void func_free(Expression_Func* func)
+{
+    te_free(func->expr); func->expr = NULL;
+    te_free(func->derivative); func->derivative = NULL;
+    te_free(func->second_derivative); func->second_derivative = NULL;
 }
 
 inline Expression_Func func_make(str_view_t text, double lower, double upper, int* error = NULL)
@@ -40,15 +49,44 @@ inline Expression_Func func_make(str_view_t text, double lower, double upper, in
     return func;
 }
 
+inline void func_clear(Expression_Func* func)
+{
+    memset(func, 0, sizeof(Expression_Func));
+    func->variable = { "x", &func->x };
+}
+
+inline double func_eval(Expression_Func* func, double x)
+{
+    func->x = x;
+    return te_eval(func->expr); 
+}
+
+inline double Expression_Func::operator()(double x)
+{
+    return func_eval(this, x);
+}
+
+inline double func_eval_derivative(Expression_Func* func, double x)
+{
+    func->x = x;
+    return te_eval(func->derivative);
+}
+
+inline double func_eval_second_derivative(Expression_Func* func, double x)
+{
+    func->x = x;
+    return te_eval(func->second_derivative);
+}
+
 inline Vector_Type func_eval(Expression_Func* func, const Vector_Type& inputs)
 {
     Vector_Type result(inputs.size());
 
     for (size_t i = 0; i < result.size(); i++)
     {
-        func->x = inputs[i];
-        result.push_back(te_eval(func->expr));
+        result.push_back(func_eval(func, inputs[i]));
     }
+
     return result;
 }
 
@@ -76,17 +114,4 @@ inline Inputs_And_Outputs func_eval_range(Expression_Func* func, size_t num_eval
     }
 
     return result;
-}
-
-struct Derivative_Expression_Func
-{
-    Expression_Func* initial_func;
-    te_expr* expr;
-    inline double operator()(double x);
-};
-
-inline double Derivative_Expression_Func::operator()(double x)
-{
-    this->initial_func->x = x;
-    return te_eval(this->expr);
 }

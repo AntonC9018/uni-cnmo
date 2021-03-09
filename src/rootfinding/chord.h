@@ -12,7 +12,7 @@ namespace Root_Finding
     template<typename Function, typename Derivative>
     double chord(
         Function& f, 
-        Derivative& f_second_derivative, 
+        Derivative f_second_derivative, 
         const Interval inter, 
         Error_Data* error_data, 
         Profiler* profiler = &_std_profiler)

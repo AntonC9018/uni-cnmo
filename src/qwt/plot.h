@@ -29,12 +29,10 @@ public:
 
     void update_curve(Expression_Func* func);
 
-    void zeros(
+    std::vector<double> zeros(
         Expression_Func* func, 
         Root_Finding::Error_Data* error_data, 
-        Root_Finding::Option option,
-        Derivative_Expression_Func* derivative = NULL,
-        Derivative_Expression_Func* second_derivative = NULL
+        size_t option_index
     );
 
 private:

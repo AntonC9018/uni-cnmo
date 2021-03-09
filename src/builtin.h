@@ -3,8 +3,6 @@
 
 #include "func.h"
 
-#define countof(arr) sizeof((arr)) / sizeof((arr)[0])
-
 namespace Builtin
 {
     static Expression_Func funcs[]

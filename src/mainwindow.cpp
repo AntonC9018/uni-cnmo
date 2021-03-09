@@ -10,9 +10,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     // These do not have a default constructor, which is why they have trash by default
     custom_function_str = STR_NULL;
-    selected_custom_function.text = STR_NULL;
-    selected_custom_function.expr = NULL;
-    selected_custom_function.variable = { "x", &selected_custom_function.x };
+    func_clear(&selected_custom_function);
 
     ui->setupUi(this);
     ui->precision_spin_box->setRange(-10, -5);
@@ -140,8 +138,7 @@ void MainWindow::change_selected_custom_function()
 
     int error = 0;
 
-    te_free(selected_custom_function.expr);
-    selected_custom_function.expr = NULL;
+    func_free(&selected_custom_function);
 
     if (qstr_utf8 != "")
     {
@@ -158,7 +155,6 @@ void MainWindow::change_selected_custom_function()
 
     if (error)
     {
-        selected_custom_function.expr = te_compile("0", NULL, 0, NULL);
         puts("The function is invalid");
 
         if (ui->function_custom_rbutton->isChecked())
@@ -198,7 +194,10 @@ void MainWindow::change_lower_bound(double value)
 
 void MainWindow::changed_function_redraw_graph()
 {
-    ui->plot->update_curve(get_selected_function());
+    auto selected_function = get_selected_function();
+
+    if (selected_function->expr)
+        ui->plot->update_curve(selected_function);
 }
 
 void MainWindow::reestimate_zeros()
@@ -207,25 +206,43 @@ void MainWindow::reestimate_zeros()
 
     auto selected_function = get_selected_function();
 
-    // Let's calculate the derivative here for now
-    // I know this code looks REALLY scuffed, however, in order to clean this up
-    // I'd have to spend A LOT of extra time, which is not worth it for this project.
-    Derivative_Expression_Func derivative = {
-        selected_function,
-        te_differentiate_symbolically(selected_function->expr, &selected_function->variable, NULL)
-    };
-    Derivative_Expression_Func second_derivative = {
-        selected_function,
-        te_differentiate_symbolically(derivative.expr, &selected_function->variable, NULL)
-    };
+    if (selected_function->expr)
+    {
+        Error_Data error_data;
+        error_data.error_message = STR_NULL;
+        error_data.max_iters = 1000;
+        error_data.tolerance = pow(10, ui->precision_spin_box->value());
 
-    Error_Data error_data;
-    error_data.error_message = STR_NULL;
-    error_data.max_iters = 1000;
-    error_data.tolerance = pow(10, ui->precision_spin_box->value());
+        auto new_zeros = ui->plot->zeros(
+            selected_function, &error_data, ui->algorithm_combo->currentIndex()
+        );
 
-    ui->plot->zeros(selected_function, &error_data, 
-        (Option)ui->algorithm_combo->currentIndex(), &derivative, &second_derivative);
+        auto children = ui->zeros_table->children();
+        auto current_number = children.count();
+        auto new_number = new_zeros.size();
 
-    te_free(derivative.expr); te_free(second_derivative.expr);
+
+        // Add more markers, if the current amount does not suffice.
+        for (size_t i = current_number; i < new_number; i++)
+        {
+            auto row = new QLabel(*ui->zeros_table);
+            row->
+        }
+        // Show all active markers
+        for (size_t i = 0; i < new_number; i++)
+        {
+            _zeros[i]->show();
+        }
+        // Hide marker excess.
+        for (size_t i = new_number; i < current_number; i++)
+        {
+            _zeros[i]->hide();
+        }
+
+
+        for (size_t i = current_zeros_count; i < new_zeros_count; i++)
+        {
+
+        }
+    }
 }

@@ -31,8 +31,6 @@ private:
     // depending on the current selection.
     Expression_Func* get_selected_function();
 
-    Root_Finding::Option root_finding_option;
-
 signals:
     void selected_function_changed();
     void selected_method_changed();

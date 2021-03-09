@@ -5,7 +5,7 @@ namespace Root_Finding
 {
     template<typename Derivative>
     inline bool newton_conditions_met(
-        Derivative& f_derivative, const double x_initial_guess)
+        Derivative f_derivative, const double x_initial_guess)
     {
         return f_derivative(x_initial_guess) != 0;
     }
@@ -13,7 +13,7 @@ namespace Root_Finding
     template<typename Function, typename Derivative>
     double newton(
         Function& f, 
-        Derivative& f_derivative, 
+        Derivative f_derivative, 
         const double x_initial_guess, 
         Error_Data* error_data,
         Profiler* profiler = &_std_profiler)
@@ -39,11 +39,11 @@ namespace Root_Finding
         RF_ITERATIONS_ERROR();
     }
 
-    template<typename Function, typename Derivative>
+    template<typename Function, typename Derivative, typename Second_Derivative>
     double newton_enhanced_start(
         Function& f, 
-        Derivative& f_derivative, 
-        Derivative& f_second_derivative,
+        Derivative f_derivative, 
+        Second_Derivative f_second_derivative,
         const Interval inter,
         Error_Data* error_data,
         Profiler* profiler = &_std_profiler)
