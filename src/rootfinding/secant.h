@@ -54,7 +54,7 @@ namespace Root_Finding
         double x1;
 
         // Choose the place where the derivative is bigger. Imagine x^2 graph.
-        // This condition will always get you on the steep slope rather then in the trough.
+        // This condition will always get you on the steep slope rather than in the trough.
         if (signbit(f(inter.start)) == signbit(f_second_derivative(inter.start)))
         {
             x0 = inter.start;

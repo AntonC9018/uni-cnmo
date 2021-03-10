@@ -49,14 +49,13 @@ namespace Root_Finding
                x_new = x + dx
             */
             double dx = (x - x_rel) * f_x / (f_rel - f_x);
+            x += dx;
 
             profiler->num_iters++;
 
-            if (abs(f_x) < error_data->tolerance 
-                && abs(dx) < error_data->tolerance)
+            if (abs(f_x) < error_data->tolerance && abs(dx) < error_data->tolerance)
                 return x;
             
-            x += dx;
             i++;
         }
 

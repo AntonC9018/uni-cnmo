@@ -127,8 +127,6 @@ void MainWindow::change_selected_builtin_function(int index)
     {
         selected_builtin_function = &Builtin::funcs[index];
 
-        // puts(selected_builtin_function->text.chars);
-
         if (ui->function_builtin_rbutton->isChecked())
             emit selected_function_changed();
     }

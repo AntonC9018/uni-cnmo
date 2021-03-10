@@ -25,12 +25,13 @@ namespace Root_Finding
 
         while (i < error_data->max_iters)
         {
-            double dx = f(x) / f_derivative(x);
+            double f_x = f(x);
+            double dx = f_x / f_derivative(x);
             x = x - dx;
-            
+
             profiler->num_iters++;
 
-            if (abs(dx) < error_data->tolerance)
+            if (abs(f_x) < error_data->tolerance && abs(dx) < error_data->tolerance)
                 return x;
 
             i++;
