@@ -7,3 +7,7 @@ result.txt
 CMakeLists.txt.user
 env.txt
 .vscode
+
+# doc
+*.pdf
+*.html

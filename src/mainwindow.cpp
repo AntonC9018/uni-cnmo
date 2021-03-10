@@ -88,7 +88,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->function_custom_rbutton,
             SIGNAL(toggled(bool)),
             this,
-            SLOT(changed_function_redraw_graph())
+            SLOT(change_selected_function())
     );
 
     connect(ui->precision_spin_box,
@@ -219,4 +219,9 @@ void MainWindow::reestimate_zeros()
 
         zeros_model.swap_data(new_zeros);
     }
+}
+
+void MainWindow::change_selected_function()
+{
+    emit selected_function_changed();
 }

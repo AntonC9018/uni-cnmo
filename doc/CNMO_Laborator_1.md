@@ -1,6 +1,10 @@
 # CNMO, Laborator 1.
 
-A realizat: **Curmanschii Anton, IA1901**
+A realizat: **Curmanschii Anton, IA1901**.
+
+Întregul cod puteți privi [pe github](https://github.com/AntonC9018/uni-cnmo).
+
+[Documentul acesta pe github](https://github.com/AntonC9018/uni-cnmo/blob/master/doc/CNMO_Laborator_1.md).
 
 ## Sarcina
 
@@ -20,7 +24,7 @@ Se consideră ecuația $f(x)$, unde funcția $f(x)$ este definită interactiv sa
     2. Valorile funcției $f(x)$ în rădăcini;
     3. Numărul de iterații efectuate cu metoda aplicată, necesar pentru a atinge exactitatea cerută;
     4. Pentru fiecare rădăcină se va indica timpul necesar pentru calculul acesteia cu precizia cerută;
-    5. Pentru fiecare metodă afișați și reprezentați grafic variația erorii Cauchy (distanța dintre două iterații succesive) și a reziduului $f(x)$ parcursul iterațiilor (Acest punct nu l-am făcut).
+    5. Pentru fiecare metodă afișați și reprezentați grafic variația erorii Cauchy (distanța dintre două iterații succesive) și a reziduului $f(x)$ pe parcursul iterațiilor (Acest punct nu l-am făcut).
 - Se va întocmi o dare de seamă ce va conține:
     1. Formularea problemei.
     2. Prezentarea metodelor și algoritmilor de soluționare.
@@ -29,7 +33,7 @@ Se consideră ecuația $f(x)$, unde funcția $f(x)$ este definită interactiv sa
 
 ## Introducere
 
-Pentru lucrarea dată, am hotărât să încerc Qt pentru realizarea interfeței grafice. Însă, așa ca nu utilizez MATLAB, am adăugător niște probleme pe care trebuie să le soluționez pentru a realiza lucrarea, anume:
+Pentru lucrarea dată, am hotărât să încerc Qt pentru realizarea interfeței grafice. Însă, așa ca nu utilizez MATLAB, mi-am adăugat niște probleme pe care trebuie să le soluționez pentru a realiza lucrarea, anume:
 1. Înțelegerea sistemului de build al lui Qt.
 2. Reprezentarea graficelor funcției în Qt.
 3. Expresii matematice (definirea funcțiilor din text) în C++.
@@ -44,15 +48,15 @@ După ce am discutat aceste chestii, voi prezenta interfața și analiza algorit
 
 Am decis să utilizez Qt pentru acest proiect. Qt este una din cele mai populare biblioteci pentru interfețe grafice cross-platform. Nu am utilizat Qt niciodată. De fapt, nici nu am știut nimic despre Qt.
 
-Partea cea mai avantajoasă a lui Qt este documentarea. Documentarea lui Qt este mimunată, în special în comparare cu documentarea lui `gtkmm`, care am utilizat pentru proiect la criptografie.
+Partea cea mai avantajoasă a lui Qt este documentarea. Documentarea lui Qt este minunată, în special în comparare cu documentarea lui `gtkmm`, care am utilizat pentru proiect la criptografie.
 
 Qt instalează, împreună cu însăși biblioteca, un număr de intrumente suplimentare. De exemplu, aplicația `Qt Creator`, `Qt Designer`, instrumentele `ninja` și `qmake` pentru build.
 
-`Qt Creator` este un fel de IDE pentru lucru cu Qt. Îmi place să utilizez `VS Code` peste tot, deci eu l-am lăsat numai să-mi genereze proiectul, pe urmă am studiat cum lucrează procesul de build, și m-am sărit în `VS Code`.
+`Qt Creator` este un fel de IDE pentru lucru cu Qt. Îmi place să utilizez `VS Code` peste tot, deci eu l-am lăsat numai să-mi genereze proiectul, pe urmă am studiat cum lucrează procesul de build, și am sărit înapoi în `VS Code`.
 
 ### Build
 
-Procesul de build în Qt default este interesant. 
+Procesul de build în Qt este interesant. 
 
 Este posibil de a utiliza `CMake` ori `qmake` (analogul lui `CMake` dar desemnat special pentru Qt). Așa ca eu doream demult să studiez `CMake`-ul, am hotărât să-l utilizez pe el. Cu `CMake`, generați un fișier care conține toate opțiunile, drumuri la biblioteci, fișierele sursă, etc. pentru proiectul dat. 
 
@@ -69,14 +73,14 @@ Priviți fișierele [CMakeLists.txt](https://github.com/AntonC9018/uni-cnmo/blob
 
 ## Qwt
 
-`Qwt` este biblioteca pentru Qt pentru reprezentarea graficelor și chestiilor legate de ele. Documentare, în contrast cu cea a lui Qt, este destul de mediocră. Lucru bun că include niște exemple întrege de cod, descifrând care devine ceva clar modul de funcționare a bibliotecii. Am fost nevoit să pierd un timp semnificativ cu aceasta, dar la sfârșit m-am descurcat.
+`Qwt` este biblioteca pentru Qt pentru reprezentarea graficelor și chestiilor legate de ele. Documentarea, în contrast cu cea a lui Qt, este destul de mediocră. Lucru bun că include niște exemple întrege de cod, descifrând care devine ceva clar modul de funcționare a bibliotecii. Am fost nevoit să pierd un timp semnificativ cu aceasta, dar la sfârșit m-am descurcat.
 
 
 ## Expresii matematice
 
 Aici, am încercat 3 librării. 
 
-Dacă dați search în google pentru "parsing math expressions in C++" primul search vă dă `exprtk`. Însă, este o mare problemă legată de el — el este prea masiv. Exemplul minimal cu funcționalități de bază de 10 linii de cod (interpretarea expresiei matematice dintr-un șir de caractere) la mine compila 15 minute: 5 minute compilarea, 10 de minute linkarea. Nu doar aceasta — nici nu este posibil să-l compilați fără ambele flaguri de optimizare și flagul `-Wa,-mbig-obj` care permite să depășiți limita maximă de mărimea unui fișier obj. Dacă sunteți interesați, urmăriți likurile din [CMakeLists.txt](https://github.com/AntonC9018/uni-cnmo/blob/master/CMakeLists.txt#L62). În orice caz, mărimea lui gigantică l-a făcut inutil.
+Dacă dați search în google pentru "parsing math expressions in C++" primul search vă dă `exprtk`. Însă, este o mare problemă legată de el — el este prea masiv. Exemplul minimal cu funcționalități de bază de 10 linii de cod (interpretarea expresiei matematice dintr-un șir de caractere) la mine compila 15 minute: 5 minute compilarea, 10 minute linkarea. Nu doar aceasta — nici nu este posibil să-l compilați fără ambele flaguri de optimizare și flagul `-Wa,-mbig-obj` care permite să depășiți limita maximă de mărimea unui fișier obj. Dacă sunteți interesați, urmăriți likurile din [CMakeLists.txt](https://github.com/AntonC9018/uni-cnmo/blob/master/CMakeLists.txt#L62). În orice caz, mărimea lui gigantică l-a făcut inutil.
 
 A doua variantă pe care am încercat-o, era [cparse](https://github.com/cparse/cparse). [Însă, am avut probleme cu el](https://github.com/cparse/cparse/issues/78). În plus, el nu conține funcții pentru diferențiere și codul lui este prea complicat, deci aș pierde prea mult timp realizând această funcționalitate eu singur. Am încercat să caut ceva mai simplu. 
 
@@ -92,7 +96,7 @@ inline double differentiate(Function& f, double x, double delta)
 }
 ```
 
-Am învestigat și o variantă, anume `boost::spirit`. `boost::spirit` este un instrument foarte general desemnat dezvoltării parserurilor și gramaticelor. Este un lucru despre care eu aș dori să cunosc mai mult în viitor, dar nu în scopul proiectului acesta.
+Am învestigat încă o variantă, anume `boost::spirit`. `boost::spirit` este un instrument foarte general desemnat dezvoltării parserurilor și gramaticelor. Este un lucru despre care eu aș dori să cunosc mai mult în viitor, dar nu în scopul proiectului acesta.
 
 
 ## Prezentarea interfeței
@@ -109,7 +113,8 @@ Mai jos putem defini funcția personalizată.
 
 ![](image/ui_custom_function.png)
 
-După selectarea unei funcții, sau schimbarea a valorilor-capete, graficul și datele la aproximări imediat se schimbă în răspuns. [Remarci la cod](#responsivitatea).
+După selectarea unei funcții, sau schimbarea a valorilor-capete, graficul și datele la aproximări imediat se schimbă în răspuns. 
+[Remarci la cod](#responsivitatea).
 
 ![](image/ui_custom_function_effect.png)
 
@@ -144,7 +149,7 @@ Avantajul principal al acestei metode este faptul că metoda converge stabil pen
 
 ### Cod
 
-Condițiile inițiale sună astfel: `a` din intervalul de căutare trebuie să fie mai mic ca `b`, funcția trebuie să-și schimbe semnul la capete. În codul de mai jos, funcția `signbit()` inspectează primul bit al numărului floating point de precizie dublă care în reprezentarea canonică conține informația despre semn: dacă bitul este setat, semnul este negativ, altfel — pozitiv.
+Condițiile inițiale sună astfel: `a` din intervalul de căutare trebuie să fie mai mic ca `b`, funcția trebuie să-și schimbe semnul la capete. În codul de mai jos, funcția `signbit()` inspectează primul bit al numărului floating point de precizie dublă care în reprezentarea canonică conține informația despre semn: dacă bitul este setat (funcția dă true), semnul este negativ, altfel — pozitiv.
 ```C++
 template<typename Function>
 inline bool bisection_conditions_met(Function& f, const Interval i)
@@ -205,7 +210,7 @@ Eroarea se împărțește în jumătate la fiecare iterație, deci algoritmul co
 
 ### Descrierea succintă
 
-Metoda Newton folosește derivata pentru a se apropia de rădăcina. Această animație explică procesul:
+Metoda Newton folosește derivata pentru a se apropia de rădăcina. (Această animație)[https://upload.wikimedia.org/wikipedia/commons/e/e0/NewtonIteration_Ani.gif?1615397089064] explică procesul (urmăriți linkul dacă imaginea de mai jos este statică):
 
 ![Newton's methos animation](https://upload.wikimedia.org/wikipedia/commons/e/e0/NewtonIteration_Ani.gif?1615397089064)
 
@@ -288,7 +293,7 @@ double newton_enhanced_start(
 
 ### Complexitatea
 
-În majoritatea cazurilor, cuadratică. Însă, în unele situații, ba nici nu converge pentru unele funcții, ba converge lent pentru funcții cu valoarea derivatei sau a derivatei de ordinul 2 mică.
+În majoritatea cazurilor, cuadratică. Însă, în unele situații, ba nici nu converge pentru unele funcții, ba converge lent pentru funcții cu valoarea derivatei sau a derivatei de ordinul doi mice.
 
 
 ## Metoda secantelor
@@ -344,7 +349,7 @@ double secant(
 }
 ```
 
-Metoda ajustată lucrează ca și în metoda Newton, numai că sunt luate două valori apropiate.
+Metoda ajustată selectează capetele și metoda Newton, numai că sunt luate două valori apropiate.
 ```C++
 template<typename Function, typename Derivative>
 double secant_enhanced_start(
@@ -384,11 +389,11 @@ Identică cu Newton.
 ## Metoda coardelor
 ### Descrierea succintă
 
-Lucrează prin aducerea coardei din punctele $(x_k, f(x_k))$ și $(x_0, f(x_0))$, pentru a găsi aproximarea două, $x_{k+1}$.
+Lucrează prin aducerea coardei din punctele $(x_k, f(x_k))$ și $(x_0, f(x_0))$, pentru a găsi a doua aproximare, $x_{k+1}$.
 
 ### Cod
 
-Condiția de bază: f(x) își schimbă semnul:
+Condiția de bază: $f(x)$ își schimbă semnul:
 ```C++
 template<typename Function>
 inline bool chord_conditions_met(Function& f, const Interval i)
@@ -460,8 +465,21 @@ Identică cu Newton.
 
 ## Compararea
 
-Din cauza că timer-ul nu este suficient de exact, vom face un script-test în consola pentru toate funcțiile încorporate, și ne vom uita la datele medie și totale pentru a evalua algoritmele.
+Din punct de vedere teoretic, algoritmii agresivi (toate în afară bisecției) vor fi mai puțin stabile, dar vor fi mai eficiente pentru majoritatea funcțiilor ca rezultat. În practică observăm exact acest lucru: 
+1. Algoritmii agresivi converg într-un număr mai scăzut de iterații. De exemplu, pentru exactitatea $10^{-7}$, funcția $sin(x^{3})$, cu metoda bisecției zerourile converg în 20 de iterații, iar cu celelalte metode în 5-6 iterații.
+2. Algoritmii agresivi uneori rezultă în mai multe iterații, de exemplu, când derivata este mică pentru Newton, când derivată este prea mare pentru Coardele. Atunci, numărul de iterații devine mai mare decât cela primit cu metoda bisecției.
+3. Algoritmii agresivi sunt mai puțin stabile, uneori estimând zeroul care nici nu era în intervalul inițial. Poate acest lucru are loc când intervalele inițiale sunt prea mari.
+4. Dacă mărim exactitatea (facem valoarea $\\epsilon$ mai mică), pentru metoda bisecției numărul de iterații finale crește mai rapid decât la celelalte metode. Din aceaași cauză, exactitatea primită la metodele agresive este de obicei cu mult mai mare decât cea cerută.
 
+Din cauza că timer-ul nu este suficient de exact, vom face un script-test în consolă pentru a profila toate funcțiile încorporate, și ne vom uita la datele medie și totale pentru a evalua algoritmii.
+
+Codul puteți privi [aici](https://github.com/AntonC9018/uni-cnmo/blob/master/src/rootfinding/test.cpp#L83), rezultatele executării puteți privi [aici](https://github.com/AntonC9018/uni-cnmo/blob/master/src/rootfinding/results.txt).
+
+> Chestiile de menționat referitor la datele culese: metoda Newton se va executa mai lent din cauza că evaluăm derivata. În general evaluarea unei expresii din `tinyexpr` va fi mai lentă decât avaluarea unei funcții normale, iar cazul cu derivata avem o expresie neoptimizată (de exemplu, $3\*x$ după derivarea ar devine $3\*1+0\*1$ și aceste operații adăugătoare vor fi evaluate la fiecare executare a funcției, deci *take it with a grain of salt*).
+
+Datele au arătat că numărul cel mai mic de iterații peste toate experimentele a avut metoda Newton, iar metoda cea mai rapidă pentru executare — metoda secantelor. Pe înțelese: metoda Newton calculează derivata, ceea ce este mai scump în cazul meu, decât aproximarea, metoda secantelor calculează o aproximare, iar metoda coardelor face mai multe calculări decât metoda secantelor.
+
+Însă metoda bisecției este una specială, deoarece, cum a fost menționat anterior, ea este unica stabilă metodă din setul de metode propus, în sensul că mereu converge la rădăcină într-un număr previzibil sau așteptabil de iterații, oricare ar fi funcția dată lui.
 
 
 # Remarci la cod
@@ -509,7 +527,7 @@ inline Expression_Func func_make(str_view_t text, double lower, double upper, in
 }
 ```
 
-Încă, la compilarea expresiilor, derivatiele sunt imediat calculate și păstrate ca expresii din `tinyexpr`.
+Încă, la compilarea expresiilor, derivatele sunt imediat calculate și păstrate ca expresii din `tinyexpr`.
 ```c++
 inline void func_compile(Expression_Func* func, int* error = NULL)
 {
@@ -623,4 +641,4 @@ const auto zeros_xs = localize(*func, func->lower_bound, func->upper_bound, step
 
 Deci, pentru o funcție cu un număr semnificativ de zerouri, unele zerouri nu vor fi găsite.
 
-![too many zeros](image/too_many_zeros.png)
+![too many roots](image/too_many_roots.png)

@@ -110,9 +110,7 @@ void profile()
 
             profiler_perform_experiments(
                 buffer,
-                [&](auto p) { 
-                    option_adaptor(&func, inter(p), &error_data, p);
-                },
+                [&](auto p) { option_adaptor(&func, inter(p), &error_data, p); },
                 num_experiments
             );
         }

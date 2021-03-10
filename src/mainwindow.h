@@ -47,5 +47,6 @@ public slots:
     void change_upper_bound(double value);
     void change_lower_bound(double value);
     void changed_function_redraw_graph();
+    void change_selected_function();
     void reestimate_zeros();
 };
