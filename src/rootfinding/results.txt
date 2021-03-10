@@ -1,0 +1,252 @@
+Bisection method for function 2 * sin(3 * x) - ln(x^3 - 1) + 4
+--------------------------------------
+Time elapsed: 699.01200 (ms)
+Number of iterations: 1610000
+Number of experiments: 50000
+Time per experiment: 13.98024 (microsec)
+Iterations per experiment: 32.200001
+--------------------------------------
+
+Chord method for function 2 * sin(3 * x) - ln(x^3 - 1) + 4
+--------------------------------------
+Time elapsed: 220.00500 (ms)
+Number of iterations: 580000
+Number of experiments: 50000
+Time per experiment: 4.40010 (microsec)
+Iterations per experiment: 11.600000
+--------------------------------------
+
+Newton method for function 2 * sin(3 * x) - ln(x^3 - 1) + 4
+--------------------------------------
+Time elapsed: 261.00200 (ms)
+Number of iterations: 230000
+Number of experiments: 50000
+Time per experiment: 5.22004 (microsec)
+Iterations per experiment: 4.600000
+--------------------------------------
+
+Secant method for function 2 * sin(3 * x) - ln(x^3 - 1) + 4
+--------------------------------------
+Time elapsed: 209.01100 (ms)
+Number of iterations: 350000
+Number of experiments: 50000
+Time per experiment: 4.18022 (microsec)
+Iterations per experiment: 7.000000
+--------------------------------------
+
+Bisection method for function sin(pi * x / 6) - cos(x - 1)
+--------------------------------------
+Time elapsed: 630.03400 (ms)
+Number of iterations: 1650000
+Number of experiments: 50000
+Time per experiment: 12.60068 (microsec)
+Iterations per experiment: 33.000000
+--------------------------------------
+
+Chord method for function sin(pi * x / 6) - cos(x - 1)
+--------------------------------------
+Time elapsed: 190.00000 (ms)
+Number of iterations: 510000
+Number of experiments: 50000
+Time per experiment: 3.80000 (microsec)
+Iterations per experiment: 10.200000
+--------------------------------------
+
+Newton method for function sin(pi * x / 6) - cos(x - 1)
+--------------------------------------
+Time elapsed: 220.00000 (ms)
+Number of iterations: 230000
+Number of experiments: 50000
+Time per experiment: 4.40000 (microsec)
+Iterations per experiment: 4.600000
+--------------------------------------
+
+Secant method for function sin(pi * x / 6) - cos(x - 1)
+--------------------------------------
+Time elapsed: 160.00000 (ms)
+Number of iterations: 340000
+Number of experiments: 50000
+Time per experiment: 3.20000 (microsec)
+Iterations per experiment: 6.800000
+--------------------------------------
+
+Bisection method for function exp(-x) - x^3 + 8 * cos(4 * x)
+--------------------------------------
+Time elapsed: 900.00100 (ms)
+Number of iterations: 1640000
+Number of experiments: 50000
+Time per experiment: 18.00002 (microsec)
+Iterations per experiment: 32.799999
+--------------------------------------
+
+Chord method for function exp(-x) - x^3 + 8 * cos(4 * x)
+--------------------------------------
+Time elapsed: 310.00000 (ms)
+Number of iterations: 690000
+Number of experiments: 50000
+Time per experiment: 6.20000 (microsec)
+Iterations per experiment: 13.800000
+--------------------------------------
+
+Newton method for function exp(-x) - x^3 + 8 * cos(4 * x)
+--------------------------------------
+Time elapsed: 340.00000 (ms)
+Number of iterations: 270000
+Number of experiments: 50000
+Time per experiment: 6.80000 (microsec)
+Iterations per experiment: 5.400000
+--------------------------------------
+
+Secant method for function exp(-x) - x^3 + 8 * cos(4 * x)
+--------------------------------------
+Time elapsed: 230.00000 (ms)
+Number of iterations: 360000
+Number of experiments: 50000
+Time per experiment: 4.60000 (microsec)
+Iterations per experiment: 7.200000
+--------------------------------------
+
+Bisection method for function x^6 - 5.5 * x^5 + 6.18 * x^4 + 16.54 * x^3 - 56.9592 * x^2 + 55.9872 * x - 19.3156
+--------------------------------------
+Time elapsed: 1310.00100 (ms)
+Number of iterations: 1675000
+Number of experiments: 50000
+Time per experiment: 26.20002 (microsec)
+Iterations per experiment: 33.500000
+--------------------------------------
+
+Chord method for function x^6 - 5.5 * x^5 + 6.18 * x^4 + 16.54 * x^3 - 56.9592 * x^2 + 55.9872 * x - 19.3156
+--------------------------------------
+Time elapsed: 570.00000 (ms)
+Number of iterations: 1000000
+Number of experiments: 50000
+Time per experiment: 11.40000 (microsec)
+Iterations per experiment: 20.000000
+--------------------------------------
+
+Newton method for function x^6 - 5.5 * x^5 + 6.18 * x^4 + 16.54 * x^3 - 56.9592 * x^2 + 55.9872 * x - 19.3156
+--------------------------------------
+Time elapsed: 490.00000 (ms)
+Number of iterations: 300000
+Number of experiments: 50000
+Time per experiment: 9.80000 (microsec)
+Iterations per experiment: 6.000000
+--------------------------------------
+
+Secant method for function x^6 - 5.5 * x^5 + 6.18 * x^4 + 16.54 * x^3 - 56.9592 * x^2 + 55.9872 * x - 19.3156
+--------------------------------------
+Time elapsed: 320.00000 (ms)
+Number of iterations: 400000
+Number of experiments: 50000
+Time per experiment: 6.40000 (microsec)
+Iterations per experiment: 8.000000
+--------------------------------------
+
+Bisection method for function x^6 - 0.7 * x^5 - 8.7 * x^4 + 5.58 * x^3 + 22.356 * x^2 - 8.39808 * x
+--------------------------------------
+Time elapsed: 1399.04700 (ms)
+Number of iterations: 1600000
+Number of experiments: 50000
+Time per experiment: 27.98094 (microsec)
+Iterations per experiment: 32.000000
+--------------------------------------
+
+Chord method for function x^6 - 0.7 * x^5 - 8.7 * x^4 + 5.58 * x^3 + 22.356 * x^2 - 8.39808 * x
+--------------------------------------
+Time elapsed: 619.02000 (ms)
+Number of iterations: 1075000
+Number of experiments: 50000
+Time per experiment: 12.38040 (microsec)
+Iterations per experiment: 21.500000
+--------------------------------------
+
+Newton method for function x^6 - 0.7 * x^5 - 8.7 * x^4 + 5.58 * x^3 + 22.356 * x^2 - 8.39808 * x
+--------------------------------------
+Time elapsed: 1130.06400 (ms)
+Number of iterations: 300000
+Number of experiments: 50000
+Time per experiment: 22.60128 (microsec)
+Iterations per experiment: 6.000000
+--------------------------------------
+
+Secant method for function x^6 - 0.7 * x^5 - 8.7 * x^4 + 5.58 * x^3 + 22.356 * x^2 - 8.39808 * x
+--------------------------------------
+Time elapsed: 446.02300 (ms)
+Number of iterations: 425000
+Number of experiments: 50000
+Time per experiment: 8.92046 (microsec)
+Iterations per experiment: 8.500000
+--------------------------------------
+
+Bisection method for function x^6 - 2.4 * x^5 - 18.27 * x^4 + 23.216 * x^3 + 115.7 * x^2 - 19.5804 * x - 164.818
+--------------------------------------
+Time elapsed: 1479.05400 (ms)
+Number of iterations: 1625000
+Number of experiments: 50000
+Time per experiment: 29.58108 (microsec)
+Iterations per experiment: 32.500000
+--------------------------------------
+
+Chord method for function x^6 - 2.4 * x^5 - 18.27 * x^4 + 23.216 * x^3 + 115.7 * x^2 - 19.5804 * x - 164.818
+--------------------------------------
+Time elapsed: 469.00200 (ms)
+Number of iterations: 825000
+Number of experiments: 50000
+Time per experiment: 9.38004 (microsec)
+Iterations per experiment: 16.500000
+--------------------------------------
+
+Newton method for function x^6 - 2.4 * x^5 - 18.27 * x^4 + 23.216 * x^3 + 115.7 * x^2 - 19.5804 * x - 164.818
+--------------------------------------
+Time elapsed: 862.00600 (ms)
+Number of iterations: 525000
+Number of experiments: 50000
+Time per experiment: 17.24012 (microsec)
+Iterations per experiment: 10.500000
+--------------------------------------
+
+Secant method for function x^6 - 2.4 * x^5 - 18.27 * x^4 + 23.216 * x^3 + 115.7 * x^2 - 19.5804 * x - 164.818
+--------------------------------------
+Time elapsed: 480.00000 (ms)
+Number of iterations: 725000
+Number of experiments: 50000
+Time per experiment: 9.60000 (microsec)
+Iterations per experiment: 14.500000
+--------------------------------------
+
+Bisection method for function sin(x^3)
+--------------------------------------
+Time elapsed: 410.00100 (ms)
+Number of iterations: 1633333
+Number of experiments: 50000
+Time per experiment: 8.20002 (microsec)
+Iterations per experiment: 32.666660
+--------------------------------------
+
+Chord method for function sin(x^3)
+--------------------------------------
+Time elapsed: 3681.00500 (ms)
+Number of iterations: 16992798
+Number of experiments: 50000
+Time per experiment: 73.62010 (microsec)
+Iterations per experiment: 339.855957
+--------------------------------------
+
+Newton method for function sin(x^3)
+--------------------------------------
+Time elapsed: 210.00000 (ms)
+Number of iterations: 505575
+Number of experiments: 50000
+Time per experiment: 4.20000 (microsec)
+Iterations per experiment: 10.111500
+--------------------------------------
+
+Secant method for function sin(x^3)
+--------------------------------------
+Time elapsed: 150.00000 (ms)
+Number of iterations: 694474
+Number of experiments: 50000
+Time per experiment: 3.00000 (microsec)
+Iterations per experiment: 13.889480
+--------------------------------------
+

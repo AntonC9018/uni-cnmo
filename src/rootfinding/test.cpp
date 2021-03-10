@@ -5,6 +5,20 @@
 #include "./newton.h"
 #include "./secant.h"
 
+#define Vector_Type std::vector<double>
+#include "../func/builtin.h"
+#include "option.h"
+
+void test();
+void profile();
+
+int main()
+{
+    // test();
+    profile();
+
+    return 0;
+}
 
 double func(double x)
 {
@@ -21,7 +35,7 @@ double func_second_derivative(double x)
     return 2;
 }
 
-int main()
+void test()
 {
     using namespace Root_Finding;
 
@@ -64,6 +78,43 @@ int main()
     PRINT_RESULT("Secant v2. ");
     result = newton_enhanced_start(func, func_derivative, func_second_derivative, inter, &error_data);
     PRINT_RESULT("Newton v2. ");
+}
 
-    return 0;
+void profile()
+{
+    for (auto& func : Builtin::funcs)
+    {
+        using namespace Root_Finding;
+        
+        const double num_steps = 25.0;
+        const double step = (func.upper_bound - func.lower_bound) / num_steps;
+        const auto zeros_xs = localize(func, func.lower_bound, func.upper_bound, step);
+
+        for (size_t option_index = 0; option_index < countof(option_adaptors); option_index++)
+        {
+            auto option_adaptor = option_adaptors[option_index];
+            auto name = option_text[option_index];
+            
+            Error_Data error_data;
+            error_data.error_message = STR_NULL;
+            error_data.max_iters = 1000;
+            error_data.tolerance = pow(10, -10);
+            
+            #define _x(p) zeros_xs[(p)->num_experiments % zeros_xs.size()]
+            #define inter(p) { _x((p)), _x((p)) + step }
+
+            const size_t num_experiments = 50000;
+
+            char buffer[1024];
+            sprintf(buffer, "%s method for function %s", name.chars, func.text.chars);
+
+            profiler_perform_experiments(
+                buffer,
+                [&](auto p) { 
+                    option_adaptor(&func, inter(p), &error_data, p);
+                },
+                num_experiments
+            );
+        }
+    }
 }

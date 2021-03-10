@@ -101,7 +101,7 @@ std::vector<Zeros_Table_Row> Plot::zeros(
     using namespace Root_Finding;
     const double num_steps = 100.0;
     const double step = (func->upper_bound - func->lower_bound) / num_steps;
-    auto zeros_xs = localize(*func, func->lower_bound, func->upper_bound, step);
+    const auto zeros_xs = localize(*func, func->lower_bound, func->upper_bound, step);
 
     reset_number_of_zero_markers(zeros_xs.size());
 

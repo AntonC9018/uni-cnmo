@@ -4,7 +4,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#ifndef Vector_Type
 #define Vector_Type QVector<double>
+#endif
 
 struct Expression_Func
 {

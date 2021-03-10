@@ -1,1 +1,1 @@
-g++ -Wall *.cpp ../../third_party/strlib/strlib.cpp -I../../third_party/strlib -I../../third_party/mydefines
+g++ -Wall *.cpp ../../third_party/strlib/strlib.cpp -I../../third_party/strlib -I.. -I../../third_party/tinyexpr -I../../third_party/mydefines ../../third_party/tinyexpr/tinyexpr.o

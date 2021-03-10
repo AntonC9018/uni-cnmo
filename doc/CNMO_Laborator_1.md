@@ -458,6 +458,12 @@ double chord(
 Identică cu Newton.
 
 
+## Compararea
+
+Din cauza că timer-ul nu este suficient de exact, vom face un script-test în consola pentru toate funcțiile încorporate, și ne vom uita la datele medie și totale pentru a evalua algoritmele.
+
+
+
 # Remarci la cod
 
 ## Funcțiile încorporate
@@ -531,7 +537,7 @@ Ideal, aș schimba modul în care sunt utilizate variabile în codul lui tinyexp
 
 ## Responsivitatea
 
-Responsivitatea este atinsă prin folosirea sistemului de semnale din Qt. De exemplu, codul de mai jos arată cum sunt legate semnalul de schimbare a indecelui a funcției încorporate selectate curent și schimbarea însăși variabilei păstrate a funcției selectate curent.
+Responsivitatea este atinsă prin folosirea sistemului de semnale din Qt. De exemplu, codul de mai jos arată cum sunt legate semnalul de schimbare a indicelui funcției încorporate selectate curent și schimbarea însăși variabilei ce păstrează funcția selectată curent.
 ```C++
 // Selecting the builtin function 
 connect(ui->function_selection_combo, 
@@ -555,9 +561,9 @@ void MainWindow::change_selected_builtin_function(int index)
 }
 ```
 
-Sintaxa `emit selected_function_changed()` emite semnalul că funcția selectată s-a schimbat. Remarcă: că acest semnal este emis în acest caz numai dacă este selectată opțiunea de folosire a funcțiilor încorporate.
+Sintaxa `emit selected_function_changed()` emite semnalul că funcția selectată s-a schimbat. Remarcă: acest semnal este emis în acest caz numai dacă este selectată opțiunea de folosire a funcțiilor încorporate.
 
-Am conectat mai multe funcții la funcția această de schimbare a funcției. De exemplu, redesenarea graficului:
+Am conectat mai multe sloturi la semnalul acesta de schimbare a funcției. De exemplu, redesenarea graficului:
 ```C++
 connect(this, SIGNAL(selected_function_changed()),
         this, SLOT(changed_function_redraw_graph()));
@@ -575,3 +581,46 @@ void MainWindow::changed_function_redraw_graph()
 ```
 
 `get_selected_function()` returnează funcția încorporată selectată, sau cea personalizată, în dependența de alegerea curentă a utilizatorului.
+
+
+## Localizare
+
+Pentru localizare folosesc astfel o funcție:
+```C++
+template<typename Function>
+std::vector<double> localize(Function& f, double start, double end, double step)
+{
+    std::vector<double> result;
+
+    double x = start;
+    double sign_f_x = signbit(f(x));
+
+    while (x + step <= end)
+    {
+        double x_next = x + step;
+        double sign_next = signbit(f(x_next));
+        
+        if (sign_f_x != sign_next)
+        {
+            // localized a root
+            result.push_back(x);
+        }
+
+        x = x_next;
+        sign_f_x = sign_next;
+    }
+
+    return result;
+}
+```
+
+O apelez mereu pentru un număr constant de iterații totale, independent de valorile capetelor intervalelor:
+```C++
+const double num_steps = 100.0;
+const double step = (func->upper_bound - func->lower_bound) / num_steps;
+const auto zeros_xs = localize(*func, func->lower_bound, func->upper_bound, step);
+```
+
+Deci, pentru o funcție cu un număr semnificativ de zerouri, unele zerouri nu vor fi găsite.
+
+![too many zeros](image/too_many_zeros.png)
