@@ -52,6 +52,10 @@ set(PROJECT_SOURCES
     src/mainwindow.h
     src/mainwindow.ui
 
+    src/func/ui/basicplot.cpp
+    src/func/ui/basicplot.h
+    src/func/ui/curvetracker.cpp
+
     src/rootfinding/ui/root_finding_main.cpp
     src/rootfinding/ui/root_finding_main.h
     src/rootfinding/ui/root_finding_main.ui
@@ -61,8 +65,6 @@ set(PROJECT_SOURCES
     src/func/ui/function_selection.ui
 
     src/rootfinding/ui/zeros_table_model.cpp
-    src/rootfinding/ui/zeros_table_model.h
-    src/rootfinding/ui/curvetracker.cpp
     src/rootfinding/ui/plot.cpp
 
     ${SUBMODULES_DIRECTORY}/strlib/strlib.cpp

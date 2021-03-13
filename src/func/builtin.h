@@ -1,5 +1,6 @@
 #pragma once
 #include <strlib.h>
+#include <mydefines.h>
 
 #include "func.h"
 
