@@ -569,9 +569,9 @@ Funcția `change_selected_builtin_function()` arată astfel:
 ```C++
 void MainWindow::change_selected_builtin_function(int index)
 {
-    if (index < Builtin::func_count)
+    if (index < func_count)
     {
-        selected_builtin_function = &Builtin::funcs[index];
+        selected_builtin_function = &funcs[index];
 
         if (ui->function_builtin_rbutton->isChecked())
             emit selected_function_changed();

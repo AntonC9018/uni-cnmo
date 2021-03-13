@@ -82,7 +82,7 @@ void test()
 
 void profile()
 {
-    for (auto& func : Builtin::funcs)
+    for (auto& func : funcs)
     {
         using namespace Root_Finding;
         

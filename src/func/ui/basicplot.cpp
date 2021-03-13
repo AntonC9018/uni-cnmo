@@ -1,7 +1,7 @@
 #include "basicplot.h"
 #include <algorithm>
 
-#include <func/builtin.h>
+
 
 BasicPlot::BasicPlot(QWidget *parent)
     : QwtPlot(parent)

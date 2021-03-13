@@ -1,7 +1,7 @@
 #include "plot.h"
 #include <algorithm>
 
-#include <func/builtin.h>
+
 
 namespace Root_Finding
 {
