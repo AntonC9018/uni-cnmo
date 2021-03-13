@@ -47,9 +47,18 @@ set(SUBMODULES_DIRECTORY ${CMAKE_SOURCE_DIR}/third_party)
 set(PROJECT_SOURCES
 
     src/main.cpp
+
     src/mainwindow.cpp
     src/mainwindow.h
     src/mainwindow.ui
+
+    src/rootfinding/ui/root_finding_main.cpp
+    src/rootfinding/ui/root_finding_main.h
+    src/rootfinding/ui/root_finding_main.ui
+
+    src/func/ui/function_selection.cpp
+    src/func/ui/function_selection.h
+    src/func/ui/function_selection.ui
 
     src/rootfinding/ui/zeros_table_model.cpp
     src/rootfinding/ui/zeros_table_model.h
@@ -90,8 +99,7 @@ include_directories(cnmo PUBLIC ../includes)
 # Qwt is also there in my case
 include_directories(cnmo PUBLIC ../includes/qwt)
 
-# Include some local dirs so that ui compiler works correctly 
-include_directories(cnmo PUBLIC  src/rootfinding/ui)
+# Include some local dirs so that ui compiler works correctly
 include_directories(cnmo PUBLIC  src)
 include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY})
 
