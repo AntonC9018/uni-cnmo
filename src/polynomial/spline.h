@@ -16,7 +16,9 @@ namespace Poly
     {
         size_t size_xs = sizeof(double) * num_samples;
         size_t size_coeffs = sizeof(double) * (num_samples - 1) * 4;
-        auto spline = (Cubic_Spline*) malloc(size_xs + size_coeffs + sizeof(Cubic_Spline));
+        size_t size = size_xs + size_coeffs + sizeof(Cubic_Spline);
+
+        auto spline = (Cubic_Spline*) malloc(size);
         spline->num_samples = num_samples;
         return spline;
     }

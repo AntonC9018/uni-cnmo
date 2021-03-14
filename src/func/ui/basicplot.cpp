@@ -13,20 +13,17 @@ BasicPlot::BasicPlot(QWidget *parent)
         plotLayout()->setAlignCanvasToScales(true);
         for (int axis = 0; axis < QwtPlot::axisCnt; axis++)
             axisWidget(axis)->setMargin(0);
-    }
-    {
+
         QPalette palette;
         palette.setColor(QPalette::Foreground, QColor("Blue"));
         palette.setColor(QPalette::Text,       QColor("Blue"));
         _zero_scale.setPalette(palette);
         _zero_scale.attach(this);
-    }
-    {
+
         _canvas.setAutoFillBackground(false);
         _canvas.setFrameStyle(QFrame::NoFrame);
         setCanvas(&_canvas);
-    }
-    {
+
         QwtText title("Graph");
         title.setColor(Qt::black);
         title.setRenderFlags( Qt::AlignHCenter | Qt::AlignTop );
@@ -37,10 +34,9 @@ BasicPlot::BasicPlot(QWidget *parent)
 
         _label.setText(title);
         _label.attach(this);
-    }
-    {
+
         _grid.setMajorPen( Qt::gray, 0, Qt::SolidLine );
-        _grid.setMinorPen( Qt::gray,  0, Qt::SolidLine );
+        _grid.setMinorPen( Qt::gray, 0, Qt::SolidLine );
         _grid.attach(this);
     }
     {

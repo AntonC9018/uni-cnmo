@@ -120,4 +120,5 @@ namespace Poly
     }
 
     #define SAMPLES_CONTIGUOUS(xs, degree) (xs), &(xs)[degree]
+    #define SAMPLES(xs, degree) SAMPLES_CONTIGUOUS((xs), (degree)), (degree) 
 }
