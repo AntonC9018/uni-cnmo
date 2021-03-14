@@ -55,7 +55,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBox">
+          <widget class="QSpinBox" name="degree_spin_box">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -69,14 +69,14 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="sample_algo_label">
            <property name="text">
             <string>How to select nodes</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="comboBox"/>
+          <widget class="QComboBox" name="sample_algo_combo"/>
          </item>
         </layout>
        </item>

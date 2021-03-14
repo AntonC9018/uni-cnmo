@@ -7,38 +7,39 @@ namespace Root_Finding
         : QWidget(parent)
         , ui(new Ui::Root_Finding_Main)
     {
-        ui->setupUi(this);
-        ui->precision_spin_box->setRange(-10, -5);
-        ui->precision_spin_box->setValue(-7);
-        ui->precision_spin_box->setSingleStep(0.1);
     }
 
     void Root_Finding_Main::setup(Function_Selection* function_selection)
     {
+        
+        ui->setupUi(this);
+        ui->precision_spin_box->setRange(-10, -5);
+        ui->precision_spin_box->setValue(-7);
+        ui->precision_spin_box->setSingleStep(0.1);
+        
         // Algorithms
-        using namespace Root_Finding;
-
         for (size_t i = 0; i < countof(option_text); i++)
         {
             ui->algorithm_combo->addItem(option_text[i].chars);
         }
 
+        // There must be a way to reuse this piece of code, besides inheritance
         this->function_selection = function_selection;
-
         connect(function_selection, SIGNAL(selected_function_changed()),
                 this, SLOT(changed_function_redraw_graph()));
-
-        connect(function_selection, SIGNAL(selected_function_changed()),
-                this, SLOT(reestimate_zeros()));
 
         connect(function_selection, SIGNAL(upper_bound_changed()),
                 this, SLOT(changed_function_redraw_graph()));
 
-        connect(function_selection, SIGNAL(upper_bound_changed()), 
-                this, SLOT(reestimate_zeros()));
-        
         connect(function_selection, SIGNAL(lower_bound_changed()),
                 this, SLOT(changed_function_redraw_graph()));
+
+
+        connect(function_selection, SIGNAL(selected_function_changed()),
+                this, SLOT(reestimate_zeros()));
+
+        connect(function_selection, SIGNAL(upper_bound_changed()), 
+                this, SLOT(reestimate_zeros()));
 
         connect(function_selection, SIGNAL(lower_bound_changed()), 
                 this, SLOT(reestimate_zeros()));

@@ -25,6 +25,7 @@ namespace Poly
         Function_Selection* function_selection;
 
     public slots:
+        void changed_function_redraw_graph();
 
     };
 }

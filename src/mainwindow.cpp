@@ -30,7 +30,6 @@ QWidget* MainWindow::get_current_widget()
 
 void MainWindow::current_tab_changed(int new_index)
 {
-    printf("Index changed: %i\n", new_index);
     if (new_index != current_tab_index)
     {
         // could do a common class + virtual method for them, but let's do it the simple way

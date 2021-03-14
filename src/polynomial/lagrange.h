@@ -8,30 +8,30 @@ namespace Poly
     Polynomial* lagrange_approximate_samples(
         const double xs[], 
         const double ys[], 
-        const size_t num_samples)
+        const u32 num_samples)
     {
         Polynomial* result = p_alloc_zeros(num_samples);
         double* t          = array_alloc(num_samples);
 
-        for (size_t i = 0; i < num_samples; i++)
+        for (u32 i = 0; i < num_samples; i++)
         {
             // reset t to 0
-            for (size_t j = 1; j < num_samples; j++)
+            for (u32 j = 1; j < num_samples; j++)
             {
                 t[j] = 0;
             }
             // The result will have to be multiplied by yi, so set it right away.
             t[0] = ys[i];
-            size_t current_degree = 1;
+            u32 current_degree = 1;
             double denominator = 1;
 
-            for (size_t j = 0; j < num_samples; j++)
+            for (u32 j = 0; j < num_samples; j++)
             {
                 if (j != i)
                 {
                     // Multiplying by (x - xj) is the same as
                     // Shifting all coefficients right and subtracting the coefficients times xj
-                    for (size_t k = current_degree; k >= 1; k--)
+                    for (u32 k = current_degree; k >= 1; k--)
                     {
                         t[k] = t[k - 1] - t[k] * xs[j];
                     }
@@ -93,9 +93,7 @@ namespace Poly
         const double end = 1.0)
     {
         double* xs = chebyshev_nodes(f, degree, start, end);
-        double* ys = &xs[degree];
-
-        auto result = lagrange_approximate_samples(xs, ys, degree);
+        auto result = lagrange_approximate_samples(SAMPLES_CONTIGUOUS(xs, degree), degree);
 
         free(xs);
 
