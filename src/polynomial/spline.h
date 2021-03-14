@@ -7,7 +7,7 @@ namespace Poly
     struct Cubic_Spline
     {
         u32 num_samples;
-        double data[0];
+        double data[1];
 
         inline double operator()(double x) const;
     };
@@ -16,7 +16,7 @@ namespace Poly
     {
         size_t size_xs = sizeof(double) * num_samples;
         size_t size_coeffs = sizeof(double) * (num_samples - 1) * 4;
-        size_t size = size_xs + size_coeffs + sizeof(Cubic_Spline);
+        size_t size = size_xs + size_coeffs + sizeof(Cubic_Spline) - sizeof(double);
 
         auto spline = (Cubic_Spline*) malloc(size);
         spline->num_samples = num_samples;

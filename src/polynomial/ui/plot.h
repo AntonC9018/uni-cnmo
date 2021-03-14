@@ -18,17 +18,18 @@ namespace Poly
             const double step = (end - start) / (double)num_evals;
             double x = start;
 
-            QVector<double> vec_x(num_evals);
-            QVector<double> vec_y(num_evals);
+            Inputs_And_Outputs xys;
+            xys.inputs.reserve(num_evals);
+            xys.outputs.reserve(num_evals);
 
             for (size_t i = 0; i < num_evals; i++)
             {
-                vec_x[i] = x;
-                vec_y[i] = func(x);
+                xys.inputs.push_back(x);
+                xys.outputs.push_back(func(x));
                 x += step;
             }
 
-            auto data = new QwtPointArrayData(vec_x, vec_y);
+            auto data = new QwtPointArrayData(xys.inputs, xys.outputs);
             _poly_curve.setData(data);
             replot();
         }

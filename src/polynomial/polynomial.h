@@ -7,21 +7,21 @@ namespace Poly
     struct Polynomial
     {
         u32 degree;
-        double coefficients[0]; // flexible array
+        double coefficients[1]; // flexible array
 
         inline double operator()(double x) const;
     };
 
     inline Polynomial* p_alloc(u32 degree)
     {
-        auto p = (Polynomial*) malloc(sizeof(Polynomial) + sizeof(double) * degree);
+        auto p = (Polynomial*) malloc(sizeof(Polynomial) - sizeof(double) + sizeof(double) * degree);
         p->degree = degree;
         return p;
     }
 
     inline Polynomial* p_alloc_zeros(u32 degree)
     {
-        auto p = (Polynomial*) calloc(1, sizeof(Polynomial) + sizeof(double) * degree);
+        auto p = (Polynomial*) calloc(1, sizeof(Polynomial)- sizeof(double) + sizeof(double) * degree);
         p->degree = degree;
         return p;
     }
