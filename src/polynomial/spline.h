@@ -20,6 +20,7 @@ namespace Poly
 
         auto spline = (Cubic_Spline*) malloc(size);
         spline->num_samples = num_samples;
+
         return spline;
     }
 
@@ -118,15 +119,15 @@ namespace Poly
     {
         u32 num_polynomials = num_samples - 1;
         
-        double* temp_values = array_alloc(num_samples * 4 + num_polynomials * 4);
-        double* l = temp_values;           // some temporary
-        double* u = &l[num_samples];       // some temporary
-        double* z = &u[num_samples];       // some temporary
-        double* c = &z[num_samples];       // 3rd coeff
-        double* h = &c[num_samples];       // some temporary
-        double* d = &h[num_polynomials];   // 4th coeff
-        double* b = &d[num_polynomials];   // 2nd coeff
-        double* alpha = &b[num_polynomials]; // some temporary
+        double* const temp_values = array_alloc(num_samples * 4 + num_polynomials * 4);
+        double* const l = temp_values;             // some temporary
+        double* const u = &l[num_samples];         // some temporary
+        double* const z = &u[num_samples];         // some temporary
+        double* const c = &z[num_samples];         // 3rd coeff
+        double* const h = &c[num_samples];         // some temporary
+        double* const d = &h[num_polynomials];     // 4th coeff
+        double* const b = &d[num_polynomials];     // 2nd coeff
+        double* const alpha = &b[num_polynomials]; // some temporary
 
         for (u32 i = 0; i < num_polynomials; i++)
         {
@@ -153,12 +154,11 @@ namespace Poly
             z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i]; 
         }
 
-        for (u32 i = num_polynomials; i > 0; i--)
+        for (s32 i = num_polynomials - 1; i >= 0; i--)
         {
-            u32 j = i - 1;
-            c[j] = z[j] - u[j] * c[i];
-            b[j] = (ys[i] - ys[j]) / h[j] - h[j] * (c[i] + 2 * c[j]) / 3;
-            d[j] = (c[i] - c[j]) / (3 * h[j]);
+            c[i] = z[i] - u[i] * c[i + 1];
+            b[i] = (ys[i + 1] - ys[i]) / h[i] - h[i] * (c[i + 1] + 2 * c[i]) / 3;
+            d[i] = (c[i + 1] - c[i]) / (3 * h[i]);
         }
 
         auto spline = spline_alloc(num_samples);
@@ -174,7 +174,6 @@ namespace Poly
         }
 
         free(temp_values);
-
         return spline;
     }
 
