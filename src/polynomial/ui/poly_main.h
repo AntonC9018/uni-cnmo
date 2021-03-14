@@ -27,5 +27,6 @@ namespace Poly
     public slots:
         void changed_function_redraw_graph();
         void reestimate_polinomial();
+        void select_page(int index);
     };
 }

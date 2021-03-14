@@ -100,4 +100,86 @@ namespace Poly
         return result;
     }
 
+    #define LAGRANGE_SAMPLES(xs, samp, port) (xs), &((xs)[(samp) * (port)]), (samp), (port)
+    #define LAGRANGE_TO_NORMAL_SAMPLES(xs, samp, port) (xs), &((xs)[(samp) * (port)]), (samp) * (port)
+
+    template<typename Algo, typename Function>
+    double* lagrange_sample_portions(
+        Algo& algo, Function& f, 
+        const size_t num_samples, const int num_portions, 
+        const double start, const double end)
+    {
+        const double outer_step = (end - start) / num_portions;
+        double* xs = array_alloc(num_samples * num_portions * 2);
+        double* ys = &xs[num_portions * num_samples];
+        double x = start;
+
+        for (int i = 0; i < num_portions; i++)
+        {
+            double x1 = x + outer_step;
+            algo(f, &xs[i * num_samples], &ys[i * num_samples], num_samples, x, x1);
+            x = x1;
+        } 
+
+        return xs;
+    }
+
+    // This is a lazy way of doing what I did with splines,
+    // but for a variable number of coefficients for the polynomials.
+    // Now, it is not required in my case, I'm just being lazy.
+    struct Polynomial_Portions
+    {
+        u32 num_portions;
+        double* xs;
+        Polynomial** polynomials;
+
+        inline double operator()(double x)
+        {
+            for (u32 i = 0; i < num_portions - 1; i++)
+            {
+                if (x < xs[i])
+                {
+                    return p_eval(polynomials[i], x);
+                }
+            }
+            return p_eval(polynomials[num_portions - 1], x);
+        }
+    };
+
+    Polynomial_Portions lagrange_approximate_samples_portions(
+        const double* xs,
+        const double* ys,
+        const u32 num_samples, 
+        const int num_portions)
+    {
+        Polynomial_Portions result;
+        result.xs = array_alloc(num_portions - 1);
+        result.polynomials  = (Polynomial**) malloc(sizeof(Polynomial*) * num_portions);
+        result.num_portions = num_portions;
+        
+        for (int i = 0; i < num_portions; i++)
+        {
+            const double* _xs = &xs[i * num_samples];
+            const double* _ys = &ys[i * num_samples];
+
+            if (i != num_portions - 1)
+            {
+                result.xs[i] = (_xs[num_samples - 1] + _xs[num_samples]) / 2;
+            }
+
+            result.polynomials[i] = lagrange_approximate_samples(_xs, _ys, num_samples);
+        }
+
+        return result;
+    }
+
+    void lagrange_free_portions(Polynomial_Portions portions)
+    {
+        free(portions.xs);
+        for (u32 i = 0; i < portions.num_portions; i++)
+        {
+            free(portions.polynomials[i]);
+        }
+        free(portions.polynomials);
+    }
 }

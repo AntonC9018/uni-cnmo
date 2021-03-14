@@ -55,6 +55,12 @@ namespace Poly
                 this,
                 SLOT(reestimate_polinomial())
         );
+
+        connect(ui->algorithm_combo,
+                SIGNAL(currentIndexChanged(int)),
+                this,
+                SLOT(select_page(int))
+        );
         
         connect(ui->algorithm_combo,
                 SIGNAL(currentIndexChanged(int)),
@@ -67,11 +73,18 @@ namespace Poly
                 this,
                 SLOT(reestimate_polinomial())
         );
+
+        connect(ui->lagrange_portions_spinbox,
+                SIGNAL(valueChanged(int)),
+                this,
+                SLOT(reestimate_polinomial())
+        );
     }
 
     void Poly_Main::reselect()
     {
         function_selection->reset_builtin(funcs, func_count);
+        ui->algorithm_combo->setCurrentIndex(1);
     }
 
     void Poly_Main::changed_function_redraw_graph()
@@ -80,6 +93,12 @@ namespace Poly
 
         if (selected_function->expr)
             ui->plot->update_curve(selected_function);
+    }
+
+    void Poly_Main::select_page(int index)
+    {
+        printf("Page switched to %i\n", index);
+        ui->algo_pages->setCurrentIndex(index);
     }
 
     void Poly_Main::reestimate_polinomial()
@@ -92,23 +111,51 @@ namespace Poly
         int sample_algo_index = ui->sample_algo_combo->currentIndex();
         auto sample_algo = sample_algos[sample_algo_index];
         int num_samples = ui->degree_spin_box->value();
+
+        // Lagrange has two version: one of them has an additional variable
+        int lagrange_num_portions = ui->lagrange_portions_spinbox->value();
         
-        auto samples = sample_algo(*selected_function, num_samples,
-            selected_function->lower_bound, selected_function->upper_bound);
-
-        int algo_index = ui->algorithm_combo->currentIndex();
+        
         enum { LAGRANGE = 0, LAGRANGE_PORTIONS, CUBIC_SPLINE };
+        int algo_index = ui->algorithm_combo->currentIndex();
+        
+        double* samples;
+        
+        if (algo_index == LAGRANGE_PORTIONS)
+        {
+            samples = lagrange_sample_portions(
+                sample_algo, *selected_function, 
+                num_samples, lagrange_num_portions,
+                selected_function->lower_bound, selected_function->upper_bound
+            );
+            ui->plot->update_markers(LAGRANGE_TO_NORMAL_SAMPLES(samples, num_samples, lagrange_num_portions));
+        }
+        else
+        {
+            samples = samples_alloc(num_samples);
+            sample_algo(*selected_function, SAMPLES(samples, num_samples), 
+                selected_function->lower_bound, selected_function->upper_bound);
+            ui->plot->update_markers(SAMPLES(samples, num_samples));
+        }
 
-        ui->plot->update_markers(SAMPLES(samples, num_samples));
 
         switch (algo_index)
         {
-            case LAGRANGE: 
+            case LAGRANGE:
             {
                 auto result = lagrange_approximate_samples(SAMPLES(samples, num_samples));
                 ui->plot->update_poly_curve(*result, 
                     selected_function->lower_bound, selected_function->upper_bound);
                 free(result);
+                break;
+            }
+            case LAGRANGE_PORTIONS:
+            {
+                auto result = lagrange_approximate_samples_portions(
+                    LAGRANGE_SAMPLES(samples, num_samples, lagrange_num_portions));
+                ui->plot->update_poly_curve(result,
+                    selected_function->lower_bound, selected_function->upper_bound);
+                lagrange_free_portions(result);
                 break;
             }
             case CUBIC_SPLINE: 

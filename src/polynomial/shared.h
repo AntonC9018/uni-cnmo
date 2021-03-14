@@ -30,20 +30,17 @@ namespace Poly
         }
         return result;
     }
+    
 
-    // Returns an array of x's of size num_samples and an array of y's, right after it in memory.
-    // The array contains the rescaled roots of chebyshev polynomial as x's
-    // and the values of the function at those x's as y's.
     template<typename Function>
-    double* chebyshev_nodes(
+    void chebyshev_nodes(
         Function& f, 
+        double* xs,
+        double* ys,
         const size_t num_samples,
         const double start = -1.0, 
         const double end = 1.0)
     {
-        double* xs = array_alloc(num_samples * 2);
-        double* ys = &xs[num_samples];
-
         const double middle = (end + start) / 2;
         const double half_length = (end - start) / 2;
 
@@ -59,21 +56,17 @@ namespace Poly
             xs[i] = -x;
             ys[i] = f(-x);
         }
-
-        return xs;
     }
 
     template<typename Function>
-    double* random_nodes(
+    void random_nodes(
         Function& f, 
+        double* xs,
+        double* ys,
         const size_t num_samples,
         const double start = -1.0, 
         const double end = 1.0)
     {
-        double* xs = array_alloc(num_samples * 2);
-        double* ys = &xs[num_samples];
-
-
         // Generate num_samples random numbers
         for (size_t i = 1; i < num_samples - 1; i++)
         {
@@ -95,20 +88,17 @@ namespace Poly
             xs[i] = xs[i] * scale_factor + xs[i - 1];
             ys[i] = f(xs[i]);
         }
-        
-        return xs;
     }
 
     template<typename Function>
-    double* uniform_nodes(
+    void uniform_nodes(
         Function& f, 
+        double* xs,
+        double* ys,
         const size_t num_samples,
         const double start = -1.0, 
         const double end = 1.0)
     {
-        double* xs = array_alloc(num_samples * 2);
-        double* ys = &xs[num_samples];
-
         xs[0] = start; ys[0] = f(start);
 
         if (num_samples > 1)
@@ -121,8 +111,11 @@ namespace Poly
                 ys[i] = f(xs[i]);
             }
         }
+    }
 
-        return xs;
+    double* samples_alloc(size_t num_samples)
+    {
+        return array_alloc(num_samples * 2);
     }
 
     #define SAMPLES_CONTIGUOUS(xs, num_samples) (xs), &((xs)[num_samples])
