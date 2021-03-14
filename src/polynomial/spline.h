@@ -26,12 +26,12 @@ namespace Poly
 
     inline double* spline_xs(Cubic_Spline* spline)
     {
-        return spline->data;
+        return &spline->data[0];
     }
 
     inline double* spline_coeffs(Cubic_Spline* spline)
     {
-        return spline->data + sizeof(double) * spline->num_samples;
+        return &spline->data[spline->num_samples];
     }
 
     inline double* spline_coeffs_ith(Cubic_Spline* spline, const u32 i)
@@ -41,17 +41,39 @@ namespace Poly
 
     inline const double* spline_xs(const Cubic_Spline* spline)
     {
-        return spline->data;
+        return &spline->data[0];
     }
 
     inline const double* spline_coeffs(const Cubic_Spline* spline)
     {
-        return spline->data + sizeof(double) * spline->num_samples;
+        return &spline->data[spline->num_samples];
     }
 
     inline const double* spline_coeffs_ith(const Cubic_Spline* spline, const u32 i)
     {
         return &(spline_coeffs(spline)[4 * i]);
+    }
+
+    inline void spline_print_ith(const Cubic_Spline* spline, const u32 i)
+    {
+        auto xs = spline_xs(spline);
+        printf("[%f, %f): ", xs[i], xs[i + 1]);
+        auto coeffs = spline_coeffs_ith(spline, i);
+        printf("%f", coeffs[0]);
+        printf(" + %fx", coeffs[1]);
+        printf(" + %fx^2", coeffs[2]);
+        printf(" + %fx^3", coeffs[3]);
+    }
+
+    inline void spline_print(const Cubic_Spline* spline)
+    {
+        for (u32 i = 0; i < spline->num_samples - 2; i++)
+        {
+            spline_print_ith(spline, i);
+            printf(";\n");
+        }
+        spline_print_ith(spline, spline->num_samples - 2);
+        printf(".\n\n");
     }
 
     double spline_eval_ith(const Cubic_Spline* spline, const u32 i, const double x)
@@ -71,18 +93,14 @@ namespace Poly
     double spline_eval(const Cubic_Spline* spline, const double x)
     {
         const double* xs = spline_xs(spline);
-        if (xs[0] > x) 
+        for (u32 i = 0; i < spline->num_samples - 1; i++)
         {
-            return 0;
-        }
-        for (u32 i = 1; i < spline->num_samples; i++)
-        {
-            if (xs[i] >= x)
+            if (xs[i + 1] >= x)
             {
-                return spline_eval_ith(spline, i - 1, x);
+                return spline_eval_ith(spline, i, x);
             }
         }
-        return 0;
+        return spline_eval_ith(spline, spline->num_samples - 2, x);
         /*
         // binary search
         size_t start = 0;

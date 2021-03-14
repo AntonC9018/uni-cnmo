@@ -56,8 +56,8 @@ namespace Poly
             // Rescale the root, since it is bound between [-1, 1]
             const double x = middle + half_length * chebyshev_node;
 
-            xs[i] = x;
-            ys[i] = f(x);
+            xs[i] = -x;
+            ys[i] = f(-x);
         }
 
         return xs;
@@ -73,26 +73,29 @@ namespace Poly
         double* xs = array_alloc(num_samples * 2);
         double* ys = &xs[num_samples];
 
+
         // Generate num_samples random numbers
-        for (size_t i = 0; i < num_samples; i++)
+        for (size_t i = 1; i < num_samples - 1; i++)
         {
             xs[i] = (double)rand();
         }
         
         // Normalize the xs to the interval
-        const double sum = array_sum(xs, num_samples);
+        const double sum = array_sum(&xs[1], num_samples - 2);
         const double interval_length = end - start;
-        const double scale_factor = interval_length / sum;
-
-        xs[0] = xs[0] * scale_factor + start;
+        const double scale_factor = interval_length / (sum + RAND_MAX);
+        
+        xs[0] = start; 
         ys[0] = f(xs[0]);
+        xs[num_samples - 1] = end; 
+        ys[num_samples - 1] = f(xs[num_samples - 1]);
 
-        for (size_t i = 1; i < num_samples; i++)
+        for (size_t i = 1; i < num_samples - 1; i++)
         {
             xs[i] = xs[i] * scale_factor + xs[i - 1];
             ys[i] = f(xs[i]);
         }
-
+        
         return xs;
     }
 
@@ -122,6 +125,6 @@ namespace Poly
         return xs;
     }
 
-    #define SAMPLES_CONTIGUOUS(xs, num_samples) (xs), &(xs)[num_samples]
-    #define SAMPLES(xs, num_samples) SAMPLES_CONTIGUOUS((xs), (num_samples)), (num_samples) 
+    #define SAMPLES_CONTIGUOUS(xs, num_samples) (xs), &((xs)[num_samples])
+    #define SAMPLES(xs, num_samples) (xs), &((xs)[num_samples]), (num_samples) 
 }
