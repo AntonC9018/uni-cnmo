@@ -1,4 +1,5 @@
 #include <func/func.h>
+#include <mydefines.h>
 
 namespace Poly
 {

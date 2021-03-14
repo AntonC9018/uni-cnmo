@@ -12,9 +12,10 @@ class Function_Selection : public QWidget
 
 public:
     Function_Selection(QWidget *parent);
-    void setup(Expression_Func* builtin_functions, size_t func_count);
+    void setup();
     ~Function_Selection();
     Expression_Func* get_selected_function();
+    void reset_builtin(Expression_Func* builtin_functions, size_t func_count);
 
 private:
     Ui::Function_Selection *ui;

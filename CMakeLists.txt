@@ -60,12 +60,18 @@ set(PROJECT_SOURCES
     src/rootfinding/ui/root_finding_main.h
     src/rootfinding/ui/root_finding_main.ui
 
+    src/polynomial/ui/poly_main.cpp
+    src/polynomial/ui/poly_main.h
+    src/polynomial/ui/poly_main.ui
+
     src/func/ui/function_selection.cpp
     src/func/ui/function_selection.h
     src/func/ui/function_selection.ui
 
     src/rootfinding/ui/zeros_table_model.cpp
     src/rootfinding/ui/plot.cpp
+
+    src/polynomial/ui/plot.cpp
 
     ${SUBMODULES_DIRECTORY}/strlib/strlib.cpp
 )

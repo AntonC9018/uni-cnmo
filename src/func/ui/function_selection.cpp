@@ -7,23 +7,13 @@ Function_Selection::Function_Selection(QWidget *parent)
 {
 }
 
-void Function_Selection::setup(Expression_Func* builtin_functions, size_t func_count)
+void Function_Selection::setup()
 {
     ui->setupUi(this);
 
     // These do not have a default constructor, which is why they have trash by default
     custom_function_str = STR_NULL;
     func_clear(&custom_function);
-
-    // Setup builtin functions
-    {        
-        for (int i = 0; i < func_count; i++)
-        {
-            ui->function_selection_combo->addItem(
-                QString::fromUtf8(builtin_functions[i].text.chars));
-        }
-        this->builtin_functions = builtin_functions;
-    }
 
     ui->function_builtin_rbutton->setChecked(true);
 
@@ -61,8 +51,18 @@ void Function_Selection::setup(Expression_Func* builtin_functions, size_t func_c
             this,
             SLOT(trigger_selected_function_changed())
     );
+}
 
-    ui->function_selection_combo->setCurrentIndex(1);
+void Function_Selection::reset_builtin(Expression_Func* builtin_functions, size_t func_count)
+{
+    this->builtin_functions = builtin_functions;
+    ui->function_selection_combo->clear();
+    for (int i = 0; i < func_count; i++)
+    {
+        ui->function_selection_combo->addItem(
+            QString::fromUtf8(builtin_functions[i].text.chars));
+    }
+    ui->function_selection_combo->setCurrentIndex(0);
 }
 
 Expression_Func* Function_Selection::get_selected_function()
@@ -74,7 +74,8 @@ Expression_Func* Function_Selection::get_selected_function()
 
 void Function_Selection::change_selected_builtin_function(int index)
 {
-    if (ui->function_builtin_rbutton->isChecked())
+    if (ui->function_builtin_rbutton->isChecked() 
+        && get_selected_function()->expr != NULL)
     {
         emit selected_function_changed();
     }

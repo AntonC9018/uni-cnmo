@@ -11,7 +11,10 @@ namespace Root_Finding
         ui->precision_spin_box->setRange(-10, -5);
         ui->precision_spin_box->setValue(-7);
         ui->precision_spin_box->setSingleStep(0.1);
+    }
 
+    void Root_Finding_Main::setup(Function_Selection* function_selection)
+    {
         // Algorithms
         using namespace Root_Finding;
 
@@ -20,22 +23,24 @@ namespace Root_Finding
             ui->algorithm_combo->addItem(option_text[i].chars);
         }
 
-        connect(ui->function_selection, SIGNAL(selected_function_changed()),
+        this->function_selection = function_selection;
+
+        connect(function_selection, SIGNAL(selected_function_changed()),
                 this, SLOT(changed_function_redraw_graph()));
 
-        connect(ui->function_selection, SIGNAL(selected_function_changed()),
+        connect(function_selection, SIGNAL(selected_function_changed()),
                 this, SLOT(reestimate_zeros()));
 
-        connect(ui->function_selection, SIGNAL(upper_bound_changed()),
+        connect(function_selection, SIGNAL(upper_bound_changed()),
                 this, SLOT(changed_function_redraw_graph()));
 
-        connect(ui->function_selection, SIGNAL(upper_bound_changed()), 
+        connect(function_selection, SIGNAL(upper_bound_changed()), 
                 this, SLOT(reestimate_zeros()));
         
-        connect(ui->function_selection, SIGNAL(lower_bound_changed()),
+        connect(function_selection, SIGNAL(lower_bound_changed()),
                 this, SLOT(changed_function_redraw_graph()));
 
-        connect(ui->function_selection, SIGNAL(lower_bound_changed()), 
+        connect(function_selection, SIGNAL(lower_bound_changed()), 
                 this, SLOT(reestimate_zeros()));
 
         connect(ui->precision_spin_box,
@@ -50,8 +55,12 @@ namespace Root_Finding
                 SLOT(reestimate_zeros())
         );
 
-        ui->function_selection->setup(funcs, func_count);
         ui->zeros_table->setModel(&zeros_model);
+    }
+
+    void Root_Finding_Main::reselect()
+    {
+        function_selection->reset_builtin(funcs, func_count);
     }
 
     Root_Finding_Main::~Root_Finding_Main()
@@ -61,7 +70,7 @@ namespace Root_Finding
 
     void Root_Finding_Main::changed_function_redraw_graph()
     {
-        auto selected_function = ui->function_selection->get_selected_function();
+        auto selected_function = function_selection->get_selected_function();
 
         if (selected_function->expr)
             ui->plot->update_curve(selected_function);
@@ -71,7 +80,7 @@ namespace Root_Finding
     {
         using namespace Root_Finding;
 
-        auto selected_function = ui->function_selection->get_selected_function();
+        auto selected_function = function_selection->get_selected_function();
 
         if (selected_function->expr)
         {

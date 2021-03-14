@@ -15,15 +15,49 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <widget class="Root_Finding::Root_Finding_Main" name="root-finding" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+    <item row="1" column="0">
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>1</number>
       </property>
+      <widget class="QWidget" name="root_finding_tab">
+       <attribute name="title">
+        <string>Root Finding</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="Root_Finding::Root_Finding_Main" name="root-finding" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="polynomial_tab">
+       <attribute name="title">
+        <string>Polynomials</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="Poly::Poly_Main" name="poly" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="Function_Selection" name="function_selection" native="true"/>
     </item>
    </layout>
   </widget>
@@ -33,6 +67,16 @@
    <class>Root_Finding::Root_Finding_Main</class>
    <extends>QWidget</extends>
    <header>rootfinding/ui/root_finding_main.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Poly::Poly_Main</class>
+   <extends>QWidget</extends>
+   <header>polynomial/ui/poly_main.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Function_Selection</class>
+   <extends>QWidget</extends>
+   <header>func/ui/function_selection.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

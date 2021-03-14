@@ -1,8 +1,6 @@
 #include "plot.h"
 #include <algorithm>
 
-
-
 namespace Root_Finding
 {
     Plot::Plot(QWidget *parent)
