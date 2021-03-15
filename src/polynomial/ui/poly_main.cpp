@@ -79,6 +79,8 @@ namespace Poly
                 this,
                 SLOT(reestimate_polinomial())
         );
+
+        ui->poly_table->setModel(&table_model);
     }
 
     void Poly_Main::reselect()
@@ -129,6 +131,7 @@ namespace Poly
                 selected_function->lower_bound, selected_function->upper_bound
             );
             ui->plot->update_markers(LAGRANGE_TO_NORMAL_SAMPLES(samples, num_samples, lagrange_num_portions));
+            table_model.setSamples(samples, num_samples * lagrange_num_portions);
         }
         else
         {
@@ -136,6 +139,7 @@ namespace Poly
             sample_algo(*selected_function, SAMPLES(samples, num_samples), 
                 selected_function->lower_bound, selected_function->upper_bound);
             ui->plot->update_markers(SAMPLES(samples, num_samples));
+            table_model.setSamples(samples, num_samples);
         }
 
 
@@ -168,6 +172,5 @@ namespace Poly
             }
         }
 
-        free(samples);
     }
 }

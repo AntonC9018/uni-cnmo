@@ -72,6 +72,7 @@ set(PROJECT_SOURCES
     src/rootfinding/ui/plot.cpp
 
     src/polynomial/ui/plot.cpp
+    src/polynomial/ui/poly_table_model.cpp
 
     ${SUBMODULES_DIRECTORY}/strlib/strlib.cpp
 )

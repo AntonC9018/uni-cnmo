@@ -3,6 +3,7 @@
 
 #include "./ui_poly_main.h"
 #include <func/ui/function_selection.h>
+#include "poly_table_model.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Poly_Main; }
@@ -23,6 +24,7 @@ namespace Poly
     private:
         Ui::Poly_Main *ui;
         Function_Selection* function_selection;
+        Poly_Table_Model table_model;
 
     public slots:
         void changed_function_redraw_graph();

@@ -48,13 +48,13 @@ namespace Poly
         {
             // Calculate the ith root of chebyshev polynomial.
             // These values as sample x's minimize error on the given interval.
-            const double chebyshev_node = cos(M_PI * ((double)i + 0.5) / (double)num_samples);
+            const double chebyshev_node = -cos(M_PI * ((double)i + 0.5) / (double)num_samples);
 
             // Rescale the root, since it is bound between [-1, 1]
             const double x = middle + half_length * chebyshev_node;
 
-            xs[i] = -x;
-            ys[i] = f(-x);
+            xs[i] = x;
+            ys[i] = f(x);
         }
     }
 
