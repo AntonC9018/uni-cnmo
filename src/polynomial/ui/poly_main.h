@@ -25,10 +25,13 @@ namespace Poly
         Ui::Poly_Main *ui;
         Function_Selection* function_selection;
         Poly_Table_Model table_model;
+        template<typename Function>
+        void do_stuff(Function& f);
 
     public slots:
         void changed_function_redraw_graph();
         void reestimate_polinomial();
         void select_page(int index);
+
     };
 }

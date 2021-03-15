@@ -1,7 +1,4 @@
 #include "basicplot.h"
-#include <algorithm>
-
-
 
 BasicPlot::BasicPlot(QWidget *parent)
     : QwtPlot(parent)
@@ -24,15 +21,8 @@ BasicPlot::BasicPlot(QWidget *parent)
         _canvas.setFrameStyle(QFrame::NoFrame);
         setCanvas(&_canvas);
 
-        QwtText title("Graph");
-        title.setColor(Qt::black);
-        title.setRenderFlags( Qt::AlignHCenter | Qt::AlignTop );
+        set_label(str_lit("Graph"));
 
-        QFont font;
-        font.setBold(true);
-        title.setFont(font);
-
-        _label.setText(title);
         _label.attach(this);
 
         _grid.setMajorPen( Qt::gray, 0, Qt::SolidLine );
@@ -53,33 +43,17 @@ BasicPlot::BasicPlot(QWidget *parent)
 
 void BasicPlot::update_curve(Expression_Func* func)
 {
-    const size_t num_points = 1000;
-    const double LEEWAY_Y_PERC = 0.1;
-    const double LEEWAY_X_PERC = 0.1;
-    const double MIN_HEIGHT = 0.01;
+    update_curve(*func, func->lower_bound, func->upper_bound);
+    set_label(func->text);
+}
 
-    auto xys = func_eval_range(func, num_points);
-    auto data = new QwtPointArrayData(xys.inputs, xys.outputs);
-
-    _curve.setTitle(func->text.chars);
-    _curve.setData(data);
-
-    double min_y = *std::min_element(xys.outputs.constBegin(), xys.outputs.constEnd());
-    double max_y = *std::max_element(xys.outputs.constBegin(), xys.outputs.constEnd());
-
-    double leeway_y = (max_y - min_y) * LEEWAY_Y_PERC;
-    double leeway_x = (func->upper_bound - func->lower_bound) * LEEWAY_X_PERC;
-
-    double range_y = max_y - min_y;
-
-    if (range_y < MIN_HEIGHT)
-    {
-        double y = MIN_HEIGHT - range_y;
-        max_y += y / 2;
-        min_y -= y / 2;
-    }
-
-    setAxisScale(QwtPlot::yLeft, min_y - leeway_y, max_y + leeway_y);
-    setAxisScale(QwtPlot::xBottom, func->lower_bound - leeway_x, func->upper_bound + leeway_x);
-    replot();
+void BasicPlot::set_label(str_view_t name)
+{
+    QwtText title(QString::fromUtf8(name.chars, name.length));
+    QFont font;
+    font.setBold(true);
+    title.setFont(font);
+    title.setColor(Qt::black);
+    title.setRenderFlags( Qt::AlignHCenter | Qt::AlignTop );
+    _label.setText(title);
 }

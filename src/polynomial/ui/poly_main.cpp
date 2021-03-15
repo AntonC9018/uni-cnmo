@@ -81,6 +81,9 @@ namespace Poly
         );
 
         ui->poly_table->setModel(&table_model);
+
+        ui->error_plot->set_label(str_lit("Error"));
+        ui->moments_plot->set_label(str_lit("Moments"));
     }
 
     void Poly_Main::reselect()
@@ -126,19 +129,30 @@ namespace Poly
         if (algo_index == LAGRANGE_PORTIONS)
         {
             samples = lagrange_sample_portions(
-                sample_algo, *selected_function, 
-                num_samples, lagrange_num_portions,
-                selected_function->lower_bound, selected_function->upper_bound
+                sample_algo, 
+                *selected_function, 
+                num_samples, 
+                lagrange_num_portions,
+                selected_function->lower_bound, 
+                selected_function->upper_bound
             );
-            ui->plot->update_markers(LAGRANGE_TO_NORMAL_SAMPLES(samples, num_samples, lagrange_num_portions));
+            ui->plot->update_markers(
+                LAGRANGE_TO_NORMAL_SAMPLES(samples, num_samples, lagrange_num_portions)
+            );
             table_model.setSamples(samples, num_samples * lagrange_num_portions);
         }
         else
         {
             samples = samples_alloc(num_samples);
-            sample_algo(*selected_function, SAMPLES(samples, num_samples), 
-                selected_function->lower_bound, selected_function->upper_bound);
-            ui->plot->update_markers(SAMPLES(samples, num_samples));
+            sample_algo(
+                *selected_function, 
+                SAMPLES(samples, num_samples), 
+                selected_function->lower_bound, 
+                selected_function->upper_bound
+            );
+            ui->plot->update_markers(
+                SAMPLES(samples, num_samples)
+            );
             table_model.setSamples(samples, num_samples);
         }
 
@@ -148,8 +162,7 @@ namespace Poly
             case LAGRANGE:
             {
                 auto result = lagrange_approximate_samples(SAMPLES(samples, num_samples));
-                ui->plot->update_poly_curve(*result, 
-                    selected_function->lower_bound, selected_function->upper_bound);
+                do_stuff(*result);
                 free(result);
                 break;
             }
@@ -157,20 +170,39 @@ namespace Poly
             {
                 auto result = lagrange_approximate_samples_portions(
                     LAGRANGE_SAMPLES(samples, num_samples, lagrange_num_portions));
-                ui->plot->update_poly_curve(result,
-                    selected_function->lower_bound, selected_function->upper_bound);
+                do_stuff(result);
                 lagrange_free_portions(result);
                 break;
             }
             case CUBIC_SPLINE: 
             {
                 auto result = make_cubic_spline_normal(SAMPLES(samples, num_samples));
-                ui->plot->update_poly_curve(*result, 
-                    selected_function->lower_bound, selected_function->upper_bound);
+                do_stuff(*result);
                 free(result);
                 break;
             }
         }
 
+    }
+
+    template<typename Function>
+    void Poly_Main::do_stuff(Function& func)
+    {
+        auto selected_function = function_selection->get_selected_function();
+        ui->plot->update_poly_curve(
+            func, 
+            selected_function->lower_bound, 
+            selected_function->upper_bound
+        );
+
+        auto error_func = [&](double x) { 
+            return std::abs((func)(x) - (*selected_function)(x)); 
+        };
+
+        ui->error_plot->update_curve(
+            error_func,
+            selected_function->lower_bound, 
+            selected_function->upper_bound
+        );
     }
 }
