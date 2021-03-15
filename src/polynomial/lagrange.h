@@ -146,28 +146,55 @@ namespace Poly
         }
     };
 
-    Polynomial_Portions lagrange_approximate_samples_portions(
-        const double* xs,
-        const double* ys,
-        const u32 num_samples, 
-        const int num_portions)
+    Polynomial_Portions p_make_portions(
+        const double* xs, 
+        const size_t num_samples, 
+        const size_t num_portions)
     {
         Polynomial_Portions result;
         result.xs = array_alloc(num_portions - 1);
         result.polynomials  = (Polynomial**) malloc(sizeof(Polynomial*) * num_portions);
         result.num_portions = num_portions;
         
-        for (int i = 0; i < num_portions; i++)
+        for (int i = 0; i < num_portions - 1; i++)
         {
             const double* _xs = &xs[i * num_samples];
-            const double* _ys = &ys[i * num_samples];
+            result.xs[i] = (_xs[num_samples - 1] + _xs[num_samples]) / 2;
+        }
 
-            if (i != num_portions - 1)
-            {
-                result.xs[i] = (_xs[num_samples - 1] + _xs[num_samples]) / 2;
-            }
+        return result;
+    }
 
-            result.polynomials[i] = lagrange_approximate_samples(_xs, _ys, num_samples);
+    Polynomial_Portions lagrange_approximate_samples_portions(
+        const double* xs,
+        const double* ys,
+        const u32 num_samples, 
+        const u32 num_portions)
+    {
+        auto result = p_make_portions(xs, num_samples, num_portions);
+        
+        for (u32 i = 0; i < num_portions; i++)
+        {
+            result.polynomials[i] = lagrange_approximate_samples(
+                &xs[i * num_samples], &ys[i * num_samples], num_samples
+            );
+        }
+
+        return result;
+    }
+
+    Polynomial_Portions lagrange_node_polynomial_portions(
+        const double* xs, 
+        const u32 num_samples, 
+        const u32 num_portions)
+    {
+        auto result = p_make_portions(xs, num_samples, num_portions);
+        
+        for (u32 i = 0; i < num_portions; i++)
+        {
+            result.polynomials[i] = node_polynomial(
+                &xs[i * num_samples], num_samples
+            );
         }
 
         return result;

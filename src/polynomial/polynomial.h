@@ -117,4 +117,24 @@ namespace Poly
     { 
         return p_eval(this, x); 
     }
+
+    Polynomial* node_polynomial(const double* xs, const u32 num_samples)
+    {
+        auto result = p_alloc_zeros(num_samples);
+        auto t = &result->coefficients[0];
+        t[0] = 1;
+        u32 current_degree = 1;
+
+        for (u32 i = 1; i < num_samples; i++)
+        {
+            for (u32 k = current_degree; k >= 1; k--)
+            {
+                t[k] = t[k - 1] - t[k] * xs[i];
+            }
+            t[0] = t[0] * -xs[i];
+            current_degree++;
+        }
+
+        return result;
+    }
 }

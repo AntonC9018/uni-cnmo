@@ -25,8 +25,9 @@ namespace Poly
         Ui::Poly_Main *ui;
         Function_Selection* function_selection;
         Poly_Table_Model table_model;
-        template<typename Function>
-        void do_stuff(Function& f);
+        
+        template<typename Function, typename Node_Poly>
+        void do_stuff(Function& func, Node_Poly& node_poly);
 
     public slots:
         void changed_function_redraw_graph();

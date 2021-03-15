@@ -83,7 +83,7 @@ namespace Poly
         ui->poly_table->setModel(&table_model);
 
         ui->error_plot->set_label(str_lit("Error"));
-        ui->moments_plot->set_label(str_lit("Moments"));
+        ui->node_polynomial_plot->set_label(str_lit("Node polynomial"));
     }
 
     void Poly_Main::reselect()
@@ -161,36 +161,44 @@ namespace Poly
         {
             case LAGRANGE:
             {
-                auto result = lagrange_approximate_samples(SAMPLES(samples, num_samples));
-                do_stuff(*result);
-                free(result);
+                auto poly = lagrange_approximate_samples(SAMPLES(samples, num_samples));
+                auto node_poly = node_polynomial(samples, num_samples);
+                do_stuff(*poly, *node_poly);
+                free(poly);
+                free(node_poly);
                 break;
             }
             case LAGRANGE_PORTIONS:
             {
-                auto result = lagrange_approximate_samples_portions(
+                auto poly = lagrange_approximate_samples_portions(
                     LAGRANGE_SAMPLES(samples, num_samples, lagrange_num_portions));
-                do_stuff(result);
-                lagrange_free_portions(result);
+                auto node_poly = lagrange_node_polynomial_portions(
+                    samples, num_samples, lagrange_num_portions);
+                do_stuff(poly, node_poly);
+                lagrange_free_portions(poly);
+                lagrange_free_portions(node_poly);
                 break;
             }
             case CUBIC_SPLINE: 
             {
-                auto result = make_cubic_spline_normal(SAMPLES(samples, num_samples));
-                do_stuff(*result);
-                free(result);
+                auto poly = make_cubic_spline_normal(SAMPLES(samples, num_samples));
+                auto node_poly = node_polynomial(samples, num_samples);
+                do_stuff(*poly, *node_poly);
+                free(poly);
+                free(node_poly);
                 break;
             }
         }
 
     }
 
-    template<typename Function>
-    void Poly_Main::do_stuff(Function& func)
+    template<typename Function, typename Node_Poly>
+    void Poly_Main::do_stuff(Function& func, Node_Poly& node_poly)
     {
         auto selected_function = function_selection->get_selected_function();
+
         ui->plot->update_poly_curve(
-            func, 
+            func,
             selected_function->lower_bound, 
             selected_function->upper_bound
         );
@@ -202,6 +210,12 @@ namespace Poly
         ui->error_plot->update_curve(
             error_func,
             selected_function->lower_bound, 
+            selected_function->upper_bound
+        );
+
+        ui->node_polynomial_plot->update_curve(
+            node_poly,
+            selected_function->lower_bound,
             selected_function->upper_bound
         );
     }
