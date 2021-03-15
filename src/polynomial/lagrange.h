@@ -156,7 +156,7 @@ namespace Poly
         result.polynomials  = (Polynomial**) malloc(sizeof(Polynomial*) * num_portions);
         result.num_portions = num_portions;
         
-        for (int i = 0; i < num_portions - 1; i++)
+        for (size_t i = 0; i < num_portions - 1; i++)
         {
             const double* _xs = &xs[i * num_samples];
             result.xs[i] = (_xs[num_samples - 1] + _xs[num_samples]) / 2;

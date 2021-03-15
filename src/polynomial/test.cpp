@@ -2,6 +2,8 @@
 #include "lagrange.h"
 #include "spline.h"
 
+
+void test_stuff();
 double sin_(double t)
 {
     return sin(t);
@@ -9,6 +11,17 @@ double sin_(double t)
 
 int main()
 {
+    using namespace Poly;
+
+    double x[] { -3, 0, 3 };
+    size_t num_samples = countof(x);
+    auto p = node_polynomial(x, num_samples);
+    p_print(p);
+}
+
+void test_stuff()
+{
+    /*
     using namespace Poly;
 
     Polynomial* p0 = p_alloc(0);
@@ -40,7 +53,7 @@ int main()
     auto p3_inte = p_integrate(p3);
     p_print(p3); printf(" integral is "); p_print(p3_inte); printf("\n");
 
-    auto p3_approx = lagrange_approximate_function<Polynomial&>(*p3, 3, 1.0, 2.0);
+    auto p3_approx = lagrange_approximate_function(*p3, 3, 1.0, 2.0);
     p_print(p3_approx); printf("\n");
 
 
@@ -48,10 +61,10 @@ int main()
     auto p5 = POLY_MAKE_STATIC(coeffs);
     p_print(p5); printf("\n");
 
-    auto p5_approx = lagrange_approximate_function<Polynomial&>(*p5, 5);
+    auto p5_approx = lagrange_approximate_function(*p5, 5);
     p_print(p5_approx); printf("\n");
 
-    auto p5_approx_chebyshev = lagrange_approximate_function_chebyshev_nodes<Polynomial&>(*p5, 5);
+    auto p5_approx_chebyshev = lagrange_approximate_function_chebyshev_nodes(*p5, 5);
     p_print(p5_approx_chebyshev); printf("\n");
 
     auto p7_sin = lagrange_approximate_function_chebyshev_nodes(sin_, 7);
@@ -66,4 +79,5 @@ int main()
     {
         printf("spline at %i is %f\n", i, spline_eval(spline, spline_xs[i]));
     }
+    */
 }
