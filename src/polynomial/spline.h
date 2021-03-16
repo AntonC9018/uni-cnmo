@@ -6,7 +6,7 @@ namespace Poly
 {
     struct Cubic_Spline
     {
-        u32 num_samples;
+        size_t num_samples;
         double data[1];
 
         inline double operator()(double x) const;
@@ -34,7 +34,7 @@ namespace Poly
         return &spline->data[spline->num_samples];
     }
 
-    inline double* spline_coeffs_ith(Cubic_Spline* spline, const u32 i)
+    inline double* spline_coeffs_ith(Cubic_Spline* spline, const size_t i)
     {
         return &(spline_coeffs(spline)[4 * i]);
     }
@@ -49,12 +49,12 @@ namespace Poly
         return &spline->data[spline->num_samples];
     }
 
-    inline const double* spline_coeffs_ith(const Cubic_Spline* spline, const u32 i)
+    inline const double* spline_coeffs_ith(const Cubic_Spline* spline, const size_t i)
     {
         return &(spline_coeffs(spline)[4 * i]);
     }
 
-    inline void spline_print_ith(const Cubic_Spline* spline, const u32 i)
+    inline void spline_print_ith(const Cubic_Spline* spline, const size_t i)
     {
         auto xs = spline_xs(spline);
         printf("[%f, %f): ", xs[i], xs[i + 1]);
@@ -67,7 +67,7 @@ namespace Poly
 
     inline void spline_print(const Cubic_Spline* spline)
     {
-        for (u32 i = 0; i < spline->num_samples - 2; i++)
+        for (size_t i = 0; i < spline->num_samples - 2; i++)
         {
             spline_print_ith(spline, i);
             printf(";\n");
@@ -76,13 +76,13 @@ namespace Poly
         printf(".\n\n");
     }
 
-    double spline_eval_ith(const Cubic_Spline* spline, const u32 i, const double x)
+    double spline_eval_ith(const Cubic_Spline* spline, size_t i, double x)
     {
         const double* coeffs = spline_coeffs_ith(spline, i);
         const double xi = spline_xs(spline)[i];
         double result  = 0;
         double x_power = 1;
-        for (u32 i = 0; i < 4; i++)
+        for (size_t i = 0; i < 4; i++)
         {
             result += coeffs[i] * x_power;
             x_power *= (x - xi);
@@ -90,10 +90,10 @@ namespace Poly
         return result;
     }
 
-    double spline_eval(const Cubic_Spline* spline, const double x)
+    double spline_eval(const Cubic_Spline* spline, double x)
     {
         const double* xs = spline_xs(spline);
-        for (u32 i = 0; i < spline->num_samples - 1; i++)
+        for (size_t i = 0; i < spline->num_samples - 1; i++)
         {
             if (xs[i + 1] >= x)
             {
@@ -133,9 +133,9 @@ namespace Poly
     Cubic_Spline* make_cubic_spline_normal(
         const double xs[], 
         const double ys[], 
-        const u32 num_samples)
+        size_t num_samples)
     {
-        u32 num_polynomials = num_samples - 1;
+        size_t num_polynomials = num_samples - 1;
         
         double* const temp_values = array_alloc(num_samples * 4 + num_polynomials * 4);
         double* const l = temp_values;             // some temporary
@@ -147,13 +147,13 @@ namespace Poly
         double* const b = &d[num_polynomials];     // 2nd coeff
         double* const alpha = &b[num_polynomials]; // some temporary
 
-        for (u32 i = 0; i < num_polynomials; i++)
+        for (size_t i = 0; i < num_polynomials; i++)
         {
             h[i] = xs[i + 1] - xs[i];
         }
 
         alpha[0] = 0;
-        for (u32 i = 1; i < num_polynomials; i++)
+        for (size_t i = 1; i < num_polynomials; i++)
         {
             alpha[i] = 3.0 / h[i] * (ys[i + 1] - ys[i]) - 3.0 / h[i - 1] * (ys[i] - ys[i - 1]);
         }
@@ -165,7 +165,7 @@ namespace Poly
         z[num_samples - 1] = 0;
         c[num_samples - 1] = 0;
 
-        for (u32 i = 1; i < num_polynomials; i++)
+        for (size_t i = 1; i < num_polynomials; i++)
         {
             l[i] = 2 * (xs[i + 1] - xs[i - 1]) - h[i - 1] * u[i - 1];
             u[i] = h[i] / l[i];
@@ -182,7 +182,7 @@ namespace Poly
         auto spline = spline_alloc(num_samples);
         memcpy(spline_xs(spline), xs, sizeof(double) * num_samples);
 
-        for (u32 i = 0; i < num_polynomials; i++)
+        for (size_t i = 0; i < num_polynomials; i++)
         {
             double* coeffs = spline_coeffs_ith(spline, i);
             coeffs[0] = ys[i];

@@ -6,27 +6,27 @@ namespace Poly
 {
     struct Polynomial
     {
-        u32 degree;
+        size_t degree;
         double coefficients[1]; // flexible array
 
         inline double operator()(double x) const;
     };
 
-    inline Polynomial* p_alloc(u32 degree)
+    inline Polynomial* p_alloc(size_t degree)
     {
-        auto p = (Polynomial*) malloc(sizeof(Polynomial) - sizeof(double) + sizeof(double) * degree);
+        auto p = (Polynomial*) malloc(offsetof(Polynomial, coefficients[degree]));
         p->degree = degree;
         return p;
     }
 
-    inline Polynomial* p_alloc_zeros(u32 degree)
+    inline Polynomial* p_alloc_zeros(size_t degree)
     {
-        auto p = (Polynomial*) calloc(1, sizeof(Polynomial)- sizeof(double) + sizeof(double) * degree);
+        auto p = (Polynomial*) calloc(1, offsetof(Polynomial, coefficients[degree]));
         p->degree = degree;
         return p;
     }
 
-    inline Polynomial* p_make(u32 degree, double coeffs[])
+    inline Polynomial* p_make(size_t degree, const double coeffs[])
     {
         auto p = p_alloc(degree);
         memcpy(p->coefficients, coeffs, degree * sizeof(double));
@@ -44,7 +44,7 @@ namespace Poly
     {
         assert(p1->degree >= p2->degree);
         
-        for (u32 i = 0; i < p2->degree; i++)
+        for (size_t i = 0; i < p2->degree; i++)
         {
             p1->coefficients[i] += p2->coefficients[i];
         }
@@ -55,7 +55,7 @@ namespace Poly
         double result = 0;
         double x_power = 1;
 
-        for (u32 i = 0; i < p->degree; i++)
+        for (size_t i = 0; i < p->degree; i++)
         {
             result += x_power * p->coefficients[i];
             x_power *= x;
@@ -70,7 +70,7 @@ namespace Poly
 
         auto p_new = p_alloc(p->degree - 1);
 
-        for (u32 i = 1; i < p->degree; i++)
+        for (size_t i = 1; i < p->degree; i++)
         {
             p_new->coefficients[i - 1] = p->coefficients[i] * (double)i;
         }
@@ -83,7 +83,7 @@ namespace Poly
         auto p_new = p_alloc(p->degree + 1);
         p_new->coefficients[0] = 0;
 
-        for (u32 i = 0; i < p->degree; i++)
+        for (size_t i = 0; i < p->degree; i++)
         {
             p_new->coefficients[i + 1] = p->coefficients[i] / (double)(i + 1);
         }
@@ -118,16 +118,16 @@ namespace Poly
         return p_eval(this, x); 
     }
 
-    Polynomial* node_polynomial(const double* xs, const u32 num_samples)
+    Polynomial* node_polynomial(const double* xs, size_t num_samples)
     {
         auto result = p_alloc_zeros(num_samples + 1);
         auto t = &result->coefficients[0];
         t[0] = 1;
-        u32 current_degree = 1;
+        size_t current_degree = 1;
 
-        for (u32 i = 0; i < num_samples; i++)
+        for (size_t i = 0; i < num_samples; i++)
         {
-            for (u32 k = current_degree; k >= 1; k--)
+            for (size_t k = current_degree; k >= 1; k--)
             {
                 t[k] = t[k - 1] - t[k] * xs[i];
             }

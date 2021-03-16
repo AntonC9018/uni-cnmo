@@ -37,9 +37,9 @@ namespace Poly
         Function& f, 
         double* xs,
         double* ys,
-        const size_t num_samples,
-        const double start = -1.0, 
-        const double end = 1.0)
+        size_t num_samples,
+        double start = -1.0, 
+        double end = 1.0)
     {
         const double middle = (end + start) / 2;
         const double half_length = (end - start) / 2;

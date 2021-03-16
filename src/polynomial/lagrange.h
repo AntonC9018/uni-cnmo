@@ -8,30 +8,28 @@ namespace Poly
     Polynomial* lagrange_approximate_samples(
         const double xs[], 
         const double ys[], 
-        const u32 num_samples)
+        size_t num_samples)
     {
         Polynomial* result = p_alloc_zeros(num_samples);
-        double* t          = array_alloc(num_samples);
+        double* t = array_alloc(num_samples);
 
-        for (u32 i = 0; i < num_samples; i++)
+        for (size_t i = 0; i < num_samples; i++)
         {
             // reset t to 0
-            for (u32 j = 1; j < num_samples; j++)
-            {
-                t[j] = 0;
-            }
+            memset(&t[1], 0, (num_samples - 1) * sizeof(double));
+
             // The result will have to be multiplied by yi, so set it right away.
             t[0] = ys[i];
-            u32 current_degree = 1;
+            size_t current_degree = 1;
             double denominator = 1;
 
-            for (u32 j = 0; j < num_samples; j++)
+            for (size_t j = 0; j < num_samples; j++)
             {
                 if (j != i)
                 {
                     // Multiplying by (x - xj) is the same as
                     // Shifting all coefficients right and subtracting the coefficients times xj
-                    for (u32 k = current_degree; k >= 1; k--)
+                    for (size_t k = current_degree; k >= 1; k--)
                     {
                         t[k] = t[k - 1] - t[k] * xs[j];
                     }
@@ -105,9 +103,12 @@ namespace Poly
 
     template<typename Algo, typename Function>
     double* lagrange_sample_portions(
-        Algo& algo, Function& f, 
-        const size_t num_samples, const int num_portions, 
-        const double start, const double end)
+        Algo& algo, 
+        Function& f, 
+        size_t num_samples, 
+        int num_portions, 
+        double start, 
+        double end)
     {
         const double outer_step = (end - start) / num_portions;
         double* xs = array_alloc(num_samples * num_portions * 2);
@@ -129,13 +130,13 @@ namespace Poly
     // Now, it is not required in my case, I'm just being lazy.
     struct Polynomial_Portions
     {
-        u32 num_portions;
+        size_t num_portions;
         double* xs;
         Polynomial** polynomials;
 
         inline double operator()(double x)
         {
-            for (u32 i = 0; i < num_portions - 1; i++)
+            for (size_t i = 0; i < num_portions - 1; i++)
             {
                 if (x < xs[i])
                 {
@@ -148,8 +149,8 @@ namespace Poly
 
     Polynomial_Portions p_make_portions(
         const double* xs, 
-        const size_t num_samples, 
-        const size_t num_portions)
+        size_t num_samples, 
+        size_t num_portions)
     {
         Polynomial_Portions result;
         result.xs = array_alloc(num_portions - 1);
@@ -168,12 +169,12 @@ namespace Poly
     Polynomial_Portions lagrange_approximate_samples_portions(
         const double* xs,
         const double* ys,
-        const u32 num_samples, 
-        const u32 num_portions)
+        size_t num_samples, 
+        size_t num_portions)
     {
         auto result = p_make_portions(xs, num_samples, num_portions);
         
-        for (u32 i = 0; i < num_portions; i++)
+        for (size_t i = 0; i < num_portions; i++)
         {
             result.polynomials[i] = lagrange_approximate_samples(
                 &xs[i * num_samples], &ys[i * num_samples], num_samples
@@ -185,12 +186,12 @@ namespace Poly
 
     Polynomial_Portions lagrange_node_polynomial_portions(
         const double* xs, 
-        const u32 num_samples, 
-        const u32 num_portions)
+        size_t num_samples, 
+        size_t num_portions)
     {
         auto result = p_make_portions(xs, num_samples, num_portions);
         
-        for (u32 i = 0; i < num_portions; i++)
+        for (size_t i = 0; i < num_portions; i++)
         {
             result.polynomials[i] = node_polynomial(
                 &xs[i * num_samples], num_samples
@@ -203,7 +204,7 @@ namespace Poly
     void lagrange_free_portions(Polynomial_Portions portions)
     {
         free(portions.xs);
-        for (u32 i = 0; i < portions.num_portions; i++)
+        for (size_t i = 0; i < portions.num_portions; i++)
         {
             free(portions.polynomials[i]);
         }
