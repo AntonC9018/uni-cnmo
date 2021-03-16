@@ -57,7 +57,7 @@ Nu avem nici un buton "Run", deoarece interfața iarăși este reactivă.
 ### Descriere
 
 Metoda Lagrange în forma simplă presupune aproximarea unei funcții arbitrare printr-un polinom de grad $n - 1$ și prin $n$ puncte 
-$(x_i, f(x_i)$. 
+$(x_i, f(x_i))$. 
 
 În scurt, sunt găsite așa numite *polinoamele fundamentale*, $l_i(x)$. Proprietatea lor este că:
 $$\forall x_j, j \neq i: l_j(x_j) = 1, l_i(x_j) = 0.$$
@@ -65,7 +65,7 @@ $$\forall x_j, j \neq i: l_j(x_j) = 1, l_i(x_j) = 0.$$
 Expresia analitică a lor este: 
 $$l_i(x) = \prod_{ j = 1, i \neq j }^{n} \dfrac { x - x_j } { x_i - x_j }.$$ 
 
-Astfel, fiecare polinom fundamental este de grad cel mult $n - 1$.
+Astfel, fiecare polinom fundamental este de un grad cel mult $n - 1$.
 
 Polinomul de interpolare lui Lagrange se obține prin adunarea acestor polinoame fundamentale:
 
@@ -73,13 +73,13 @@ $$ L(x) = \sum_{ i = 1 }^{ n } f(x_i) l_i(x)= \sum_{ i = 1 }^{ n } f(x_i) \prod_
 
 ### Cod
 
-Ca să programăm metoda Lagrange, avem nevoie să definim modul în care să pastrăm polinoame și funcții pentru a le evalua. Uitați-vă în ![remarci la cod](#polinoame), pentru această parte de cod. 
+Ca să programăm metoda Lagrange, avem nevoie să definim modul în care să pastrăm polinoame și funcții pentru a le evalua. Uitați-vă în [remarci la cod](#polinoame), pentru această parte de cod. 
 
 Funcția pentru estimare a polinomului Lagrange ia la intrare o listă de $x$ coordonate, în care a fost evaluată funcția $f(x)$, și o listă de valorile acestei funcții în aceste puncte, $y$.
 
 Pentru fiecare `i`, funcția dată calculează numărătorul din formula lui $l_i$ de mai jos, păstrând coeficienții în tabloul temporar `t`, și numitorul, păstrând rezultatul în `denominator`. Pe urmă, valorile coeficienților lui $l_i$ se adaugă la polinom rezultant, după divizare la `denominator`.
 
-![Unele remarci la acest cod](#lagrange-remarci).
+[Unele remarci la acest cod](#lagrange-remarci).
 
 ```C++
 Polynomial* lagrange_approximate_samples(
@@ -144,7 +144,7 @@ Acest algoritm nu este foarte interesant din punct de vedere a codului. Pur și 
 
 Eu am implementat acest algoritm în mod leneș, adică păstrez un tablou de pointeri la polinoame, dar acest tablou ar putea fi un singur tablou de coeficienți, deoarece toate polinoamele sunt de același grad, am putea evita stocarea gradelor lor. 
 
-![Unele remarci](#lagrange-pe-porțiuni-remarci).
+[Unele remarci](#lagrange-pe-porțiuni-remarci).
 
 ### Cod
 
@@ -214,7 +214,7 @@ Spline-ul cubic reprezintă un set de polinoame de gradul 3 (adică tot sunt pe 
 
 Formulele se deduc prin rezolvarea unui sistem de ecuații, ce aduce la o soliție unică, însă necesită încă două ecuații pentru a fi complet. De obicei, se utilizează două așa perechi de ecuații: una setează valorile derivatelor de ordinul doi la capetele intervalelor la 0, alta le setează egale cu derivatele însăși funcției în acele puncte. În primul caz, așa spline-uri se mai numesc "naturale". Am realizat numai varianta aceasta de spline-uri.
 
-![Un overview pentru matematica implicată](https://mathworld.wolfram.com/CubicSpline.html)
+[Un overview pentru matematica implicată](https://mathworld.wolfram.com/CubicSpline.html)
 
 ### Cod
 
@@ -292,7 +292,7 @@ Cubic_Spline* make_cubic_spline_normal(
 
 ### Descriere
 
-Nodurile Chebyshev sunt x-urile care minimizează eroarea la metodele de aproximare a funcțiilor prin polinoame. Nodurile Chebyshev sunt proiecții punctelor de pe semicercul trigonometric separate cu unghiurile egale.
+Nodurile Chebyshev sunt $x$-urile care minimizează eroarea la metodele de aproximare a funcțiilor prin polinoame. Nodurile Chebyshev sunt proiecții punctelor de pe semicercul trigonometric pe axa $OX$ separate cu unghiurile egale.
 
 ![Chebyshev nodes](https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Chebyshev-nodes-by-projection.svg/1200px-Chebyshev-nodes-by-projection.svg.png)
 
@@ -339,18 +339,18 @@ void chebyshev_nodes(
 }
 ```
 
-## Analiza și Comparare
+# Analiză și Comparare
 
-### Lagrange vs Spline-ul cubic
+## Lagrange vs Spline-ul cubic
 
 Algoritmul **Lagrange** asigură mai bună aproximare în raport cu eroarea absolută decât algoritmul **Spline cubic**, deoarece nu pune condiția adăugătoare cu derivatele. Însă, scopul spline-urilor cubice este de a da o aproximare mai netedă a funcției, dar nu minimizarea erorii.
 
-Algoritmul **Lagrange** este mai simplu și se aplică mai repede din punct de vedere computațional, decât **Spline-ul cubic** (pentru valori relativ mici ale lui $n$). În plus, el necesită mai puțină memorie: calcularea spline-ului necesită 5 masive temporare de volumul $n$, iar a polinomului Lagrange — numai unul. Însă, calcularea spline-urilor are complexitatea-timp, în implementarea mea, de `O(N)`, iar Lagrange — `O(N^2)`.
+Algoritmul **Lagrange** este mai simplu și se aplică mai repede din punct de vedere computațional, decât **Spline-ul cubic** (pentru valori relativ mici ale lui $n$). În plus, el necesită mai puțină memorie: calcularea spline-ului necesită 5 masive temporare de volumul $n$, iar a polinomului Lagrange — numai unul. Însă, calcularea spline-urilor are complexitatea-timp, în implementarea mea, de $O(N)$, iar Lagrange — $O(N^2)$.
 
 
-### Lagrange normal vs Lagrange pe porțiuni
+## Lagrange normal vs Lagrange pe porțiuni
 
-Algoritmul **Lagrange pe porțiuni** eu aștept să dea aproximări asemănători din punct de vedere a erorii decât algoritmul **Lagrange**. Încă, cel puțin în realizarea mea, timpul de execuție a lui Lagrange este `O(N^2)`, fiindcă avem un ciclu imbricat, deci calcularea mai multor polinoame de un grad mai scăzut ar fi mai rapidă, din cauza că există formula $ (a + b)^{2} = a^{2} + 2ab + b^{2} $. Așadar, pentru un $n$ mare, versiunea algoritmului ce lucrează pe porțiuni va lucra mai repede.
+Algoritmul **Lagrange pe porțiuni** eu aștept să dea aproximări asemănători din punct de vedere a erorii decât algoritmul **Lagrange**. Încă, cel puțin în realizarea mea, timpul de execuție a lui Lagrange este $O(N^2)$, fiindcă avem un ciclu imbricat, deci calcularea mai multor polinoame de un grad mai scăzut ar fi mai rapidă, din cauza că există formula $ (a + b)^{2} = a^{2} + 2ab + b^{2} $. Așadar, pentru un $n$ mare, versiunea algoritmului ce lucrează pe porțiuni s-ar executa mai repede.
 
 Neajunsurile algoritmului **Lagrange pe porțiuni** sunt în special vizibile când funcția se comportă ca un polinom de un grad mai înalt, decât însăși aproximarea. Însă, prin micșorarea intervalelor porțiunilor, mai probabil obținem un interval unde funcția ar fi mai apropiată de un polinom de un grad scăzut, unde aproximarea pe porțiuni deja lucrează mai stabil. 
 
@@ -370,9 +370,9 @@ Cel mai mare dezavantaj al acestui algoritm, este faptul că funcția devine dis
 
 ![lagrange_discontinuous](image/lab2/lagrange_discontinuous.png)
 
-### Numărul de noduri
+## Numărul de noduri
 
-Incrementarea numărului de puncte aduce la scaderea valoarei eroarei, în special pentru nodurile chebyshev. Pentru nodurile amplasate uniform, avem o eroare mare la capete:
+Incrementarea numărului de puncte aduce la scaderea valoarei eroarei, în special pentru nodurile Chebyshev. Pentru nodurile amplasate uniform, avem o eroare mare la capete:
 
 ![lagrange_uniform](image/lab2/lagrange_uniform.png)
 
@@ -401,14 +401,14 @@ Dacă setăm numărul de puncte la o valoare mai mică, primim exact aceeași ap
 
 Toate metodele dau aproximările teribile când aplicate asupra unei funcții unde mai multe puteri ale lui x "joacă un rol important" pentru valorile funcției. În alte cuvinte, funcția oscilează. În alte cuvinte, funcția necesită un grad ridicat pentru a fi aproximată acceptabil. 
 
-În exemplele de mai jos, la început avem 8 puncte, pe urmă 15, iar ultima imagine este pentru 17 puncte. Deci, 
+În exemplele de mai jos, la început avem 8 puncte, pe urmă 15, iar ultima imagine este pentru 17 puncte:
 
 ![lagrange_oscillating_8](image/lab2/lagrange_oscillating_8.png)
 ![lagrange_oscillating_15](image/lab2/lagrange_oscillating_15.png)
 ![lagrange_oscillating_17](image/lab2/lagrange_oscillating_17.png)
 
 
-### Amplasarea nodurilor
+## Amplasarea nodurilor
 
 Algoritmul de selectare a nodurilor lui **Chebyshev** va fi evident mai eficient decât orice alt algoritm (în general), deoarece aceste noduri minimizează valoarea erorii. Însă, ipotizez că pentru unele funcții nodurile pot fi preselectate într-așa fel încât să minimizeze eroarea pentru această funcție particulară, și să nu fie echivalente cu nodurile lui Chebyshev. Nu am nici o dovadă a acestui fapt, doar îmi expun intuiția.
 
@@ -478,6 +478,6 @@ Expresia dată mai jos am folosit-o, deoarece, când aplicăm algoritmul Chebysh
 ```C++
 result.xs[i] = (_xs[num_samples - 1] + _xs[num_samples]) / 2;
 ```
-Admit că această metodă este un fel de "костыль", adică o soluție leneșă. O soluție mai elegantă ar fi de trimis valorile capetelor în funcția ce generează acea listă de polinomuri, pe lângă lista nodurilor.
+Admit că această metodă este un fel de "костыль", adică o soluție leneșă. O soluție mai elegantă ar fi de trimis valorile capetelor în funcția ce generează acea listă de polinomuri, pe lângă listei nodurilor.
 
-Nu am inclus iarăși codul pentru ștergere a polinoamelor, fiindcă l-am considerat esențial, însă îl puteți vedea pe github. 
+Nu am inclus iarăși codul pentru ștergere a polinoamelor, fiindcă nu l-am considerat esențial, însă îl puteți vedea pe github. 
