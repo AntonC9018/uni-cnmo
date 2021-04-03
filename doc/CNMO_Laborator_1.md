@@ -145,7 +145,7 @@ Vor fi prezentate algoritmii în așa mod: descrierea succintă; codul, explica�
 
 Metoda bisecției lucrează prin înjumătățirea intervalului la fiecare iterație. Astfel, algoritmul este asemănător cu căutarea binară.
 
-Avantajul principal al acestei metode este faptul că metoda converge stabil pentru orice funcție. Disavantajul este faptul că convergența este lentă în comparație cu alte metode.
+Avantajul principal al acestei metode este faptul că metoda converge stabil pentru orice funcție. Dezavantajul este faptul că convergența este lentă în comparație cu alte metode.
 
 ### Cod
 
