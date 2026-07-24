@@ -11,3 +11,7 @@ env.txt
 # doc
 *.pdf
 *.html
+
+# CMake out-of-source builds
+/build/
+/build-*/
