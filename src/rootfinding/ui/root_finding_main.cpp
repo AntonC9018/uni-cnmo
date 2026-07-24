@@ -61,6 +61,7 @@ namespace Root_Finding
 
     void Root_Finding_Main::reselect()
     {
+        init_funcs();
         function_selection->reset_builtin(funcs, func_count);
     }
 
@@ -73,7 +74,7 @@ namespace Root_Finding
     {
         auto selected_function = function_selection->get_selected_function();
 
-        if (selected_function->expr)
+        if (selected_function && selected_function->expr)
             ui->plot->update_curve(selected_function);
     }
 
@@ -83,7 +84,7 @@ namespace Root_Finding
 
         auto selected_function = function_selection->get_selected_function();
 
-        if (selected_function->expr)
+        if (selected_function && selected_function->expr)
         {
             Error_Data error_data;
             error_data.error_message = STR_NULL;

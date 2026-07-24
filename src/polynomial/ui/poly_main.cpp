@@ -88,6 +88,7 @@ namespace Poly
 
     void Poly_Main::reselect()
     {
+        init_funcs();
         function_selection->reset_builtin(funcs, func_count);
         ui->algorithm_combo->setCurrentIndex(1);
     }
@@ -96,7 +97,7 @@ namespace Poly
     {
         auto selected_function = function_selection->get_selected_function();
 
-        if (selected_function->expr)
+        if (selected_function && selected_function->expr)
             ui->plot->update_curve(selected_function);
     }
 
@@ -110,7 +111,7 @@ namespace Poly
     {
         auto selected_function = function_selection->get_selected_function();
 
-        if (selected_function->expr == NULL)
+        if (selected_function == nullptr || selected_function->expr == NULL)
             return;
 
         int sample_algo_index = ui->sample_algo_combo->currentIndex();

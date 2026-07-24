@@ -1,5 +1,6 @@
 #pragma once
 #include <mydefines.h>
+#include <assert.h>
 #include <string.h>
 #include <math.h>
 
@@ -8,7 +9,9 @@ namespace Poly
     inline double* array_alloc(size_t length)
     {
         size_t size = length * sizeof(double);
-        return (double*)malloc(size);
+        double* result = (double*)malloc(size);
+        assert(result != NULL || length == 0);
+        return result;
     }
 
     inline double* array_of(size_t length, double value)
@@ -41,6 +44,9 @@ namespace Poly
         double start = -1.0, 
         double end = 1.0)
     {
+        assert(xs != NULL);
+        assert(ys != NULL);
+        assert(num_samples > 0);
         const double middle = (end + start) / 2;
         const double half_length = (end - start) / 2;
 
@@ -67,6 +73,9 @@ namespace Poly
         const double start = -1.0, 
         const double end = 1.0)
     {
+        assert(xs != NULL);
+        assert(ys != NULL);
+        assert(num_samples >= 2);
         // Generate num_samples random numbers
         for (size_t i = 1; i < num_samples - 1; i++)
         {
@@ -99,6 +108,9 @@ namespace Poly
         const double start = -1.0, 
         const double end = 1.0)
     {
+        assert(xs != NULL);
+        assert(ys != NULL);
+        assert(num_samples > 0);
         xs[0] = start; ys[0] = f(start);
 
         if (num_samples > 1)
@@ -115,6 +127,7 @@ namespace Poly
 
     double* samples_alloc(size_t num_samples)
     {
+        assert(num_samples > 0);
         return array_alloc(num_samples * 2);
     }
 

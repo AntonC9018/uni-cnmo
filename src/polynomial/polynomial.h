@@ -17,7 +17,10 @@ namespace Poly
     {
         const size_t allocation_size =
             offsetof(Polynomial, coefficients) + degree * sizeof(double);
-        auto p = (Polynomial*) malloc(allocation_size);
+        const size_t object_size =
+            allocation_size < sizeof(Polynomial) ? sizeof(Polynomial) : allocation_size;
+        auto p = (Polynomial*) malloc(object_size);
+        assert(p != NULL);
         p->degree = degree;
         return p;
     }
@@ -26,13 +29,17 @@ namespace Poly
     {
         const size_t allocation_size =
             offsetof(Polynomial, coefficients) + degree * sizeof(double);
-        auto p = (Polynomial*) calloc(1, allocation_size);
+        const size_t object_size =
+            allocation_size < sizeof(Polynomial) ? sizeof(Polynomial) : allocation_size;
+        auto p = (Polynomial*) calloc(1, object_size);
+        assert(p != NULL);
         p->degree = degree;
         return p;
     }
 
     inline Polynomial* p_make(size_t degree, const double coeffs[])
     {
+        assert(coeffs != NULL || degree == 0);
         auto p = p_alloc(degree);
         memcpy(p->coefficients, coeffs, degree * sizeof(double));
         return p;
@@ -125,6 +132,8 @@ namespace Poly
 
     Polynomial* node_polynomial(const double* xs, size_t num_samples)
     {
+        assert(xs != NULL);
+        assert(num_samples > 0);
         auto result = p_alloc_zeros(num_samples + 1);
         auto t = &result->coefficients[0];
         t[0] = 1;

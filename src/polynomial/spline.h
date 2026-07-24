@@ -14,11 +14,13 @@ namespace Poly
 
     inline Cubic_Spline* spline_alloc(const size_t num_samples)
     {
+        assert(num_samples >= 2);
         size_t size_xs = sizeof(double) * num_samples;
         size_t size_coeffs = sizeof(double) * (num_samples - 1) * 4;
         size_t size = size_xs + size_coeffs + sizeof(Cubic_Spline) - sizeof(double);
 
         auto spline = (Cubic_Spline*) malloc(size);
+        assert(spline != NULL);
         spline->num_samples = num_samples;
 
         return spline;
@@ -67,6 +69,8 @@ namespace Poly
 
     inline void spline_print(const Cubic_Spline* spline)
     {
+        assert(spline != NULL);
+        assert(spline->num_samples >= 2);
         for (size_t i = 0; i < spline->num_samples - 2; i++)
         {
             spline_print_ith(spline, i);
@@ -92,6 +96,8 @@ namespace Poly
 
     double spline_eval(const Cubic_Spline* spline, double x)
     {
+        assert(spline != NULL);
+        assert(spline->num_samples >= 2);
         const double* xs = spline_xs(spline);
         for (size_t i = 0; i < spline->num_samples - 1; i++)
         {
@@ -135,9 +141,13 @@ namespace Poly
         const double ys[], 
         size_t num_samples)
     {
+        assert(xs != NULL);
+        assert(ys != NULL);
+        assert(num_samples >= 2);
         size_t num_polynomials = num_samples - 1;
         
         double* const temp_values = array_alloc(num_samples * 4 + num_polynomials * 4);
+        assert(temp_values != NULL);
         double* const l = temp_values;             // some temporary
         double* const u = &l[num_samples];         // some temporary
         double* const z = &u[num_samples];         // some temporary
