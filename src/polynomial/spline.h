@@ -20,7 +20,6 @@ namespace Poly
         size_t size = size_xs + size_coeffs + sizeof(Cubic_Spline) - sizeof(double);
 
         auto spline = (Cubic_Spline*) malloc(size);
-        assert(spline != NULL);
         spline->num_samples = num_samples;
 
         return spline;
@@ -147,7 +146,6 @@ namespace Poly
         size_t num_polynomials = num_samples - 1;
         
         double* const temp_values = array_alloc(num_samples * 4 + num_polynomials * 4);
-        assert(temp_values != NULL);
         double* const l = temp_values;             // some temporary
         double* const u = &l[num_samples];         // some temporary
         double* const z = &u[num_samples];         // some temporary

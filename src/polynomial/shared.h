@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <mydefines.h>
 #include <assert.h>
 #include <string.h>
@@ -8,10 +9,9 @@ namespace Poly
 {
     inline double* array_alloc(size_t length)
     {
+        assert(length > 0);
         size_t size = length * sizeof(double);
-        double* result = (double*)malloc(size);
-        assert(result != NULL || length == 0);
-        return result;
+        return (double*)malloc(size);
     }
 
     inline double* array_of(size_t length, double value)

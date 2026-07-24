@@ -17,10 +17,8 @@ namespace Poly
     {
         const size_t allocation_size =
             offsetof(Polynomial, coefficients) + degree * sizeof(double);
-        const size_t object_size =
-            allocation_size < sizeof(Polynomial) ? sizeof(Polynomial) : allocation_size;
+        const size_t object_size = std::max(sizeof(Polynomial), allocation_size);
         auto p = (Polynomial*) malloc(object_size);
-        assert(p != NULL);
         p->degree = degree;
         return p;
     }
@@ -29,10 +27,8 @@ namespace Poly
     {
         const size_t allocation_size =
             offsetof(Polynomial, coefficients) + degree * sizeof(double);
-        const size_t object_size =
-            allocation_size < sizeof(Polynomial) ? sizeof(Polynomial) : allocation_size;
+        const size_t object_size = std::max(sizeof(Polynomial), allocation_size);
         auto p = (Polynomial*) calloc(1, object_size);
-        assert(p != NULL);
         p->degree = degree;
         return p;
     }

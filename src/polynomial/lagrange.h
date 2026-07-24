@@ -15,7 +15,6 @@ namespace Poly
         assert(num_samples > 0);
         Polynomial* result = p_alloc_zeros(num_samples);
         double* t = array_alloc(num_samples);
-        assert(t != NULL);
 
         for (size_t i = 0; i < num_samples; i++)
         {
@@ -166,9 +165,8 @@ namespace Poly
         assert(num_samples > 0);
         assert(num_portions > 0);
         Polynomial_Portions result;
-        result.xs = array_alloc(num_portions - 1);
+        result.xs = num_portions > 1 ? array_alloc(num_portions - 1) : NULL;
         result.polynomials  = (Polynomial**) malloc(sizeof(Polynomial*) * num_portions);
-        assert(result.polynomials != NULL);
         result.num_portions = num_portions;
         
         for (size_t i = 0; i < num_portions - 1; i++)
