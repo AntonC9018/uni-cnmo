@@ -39,7 +39,7 @@ namespace Root_Finding
         case ITERATIONS:
             return row->num_iters;
         case TIME:
-            return row->microsecs;
+            return static_cast<qlonglong>(row->microsecs);
         }
         return 0;
     }

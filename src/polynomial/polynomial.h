@@ -14,14 +14,18 @@ namespace Poly
 
     inline Polynomial* p_alloc(size_t degree)
     {
-        auto p = (Polynomial*) malloc(offsetof(Polynomial, coefficients[degree]));
+        const auto allocation_size =
+            offsetof(Polynomial, coefficients) + degree * sizeof(double);
+        auto p = (Polynomial*) malloc(allocation_size);
         p->degree = degree;
         return p;
     }
 
     inline Polynomial* p_alloc_zeros(size_t degree)
     {
-        auto p = (Polynomial*) calloc(1, offsetof(Polynomial, coefficients[degree]));
+        const auto allocation_size =
+            offsetof(Polynomial, coefficients) + degree * sizeof(double);
+        auto p = (Polynomial*) calloc(1, allocation_size);
         p->degree = degree;
         return p;
     }
