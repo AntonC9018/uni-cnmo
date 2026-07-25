@@ -23,7 +23,12 @@ find_path(
     Qwt_INCLUDE_DIR
     NAMES qwt_plot.h
     HINTS ${_Qwt_root_hints}
-    PATH_SUFFIXES include include/qwt qwt src
+    PATH_SUFFIXES
+        include
+        include/qwt
+        "include/qwt-qt${QT_VERSION_MAJOR}"
+        qwt
+        src
 )
 
 set(_Qwt_release_names

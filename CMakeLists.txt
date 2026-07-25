@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.21)
 
+if(POLICY CMP0207)
+    cmake_policy(SET CMP0207 NEW)
+endif()
+
 project(
     cnmo
     VERSION 0.1.0
@@ -127,9 +131,47 @@ if(WIN32)
         NAMES windeployqt windeployqt.exe
         HINTS "${_qt_bin_dir}"
         DOC "Path to Qt's Windows deployment tool"
-        REQUIRED
     )
-    get_filename_component(_qt_bin_dir "${WINDEPLOYQT_EXECUTABLE}" DIRECTORY)
+    if(WINDEPLOYQT_EXECUTABLE)
+        get_filename_component(_qt_bin_dir "${WINDEPLOYQT_EXECUTABLE}" DIRECTORY)
+    elseif(_qt_qmake_executable)
+        execute_process(
+            COMMAND "${_qt_qmake_executable}" -query QT_INSTALL_PLUGINS
+            OUTPUT_VARIABLE _qt_plugins_dir
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            COMMAND_ERROR_IS_FATAL ANY
+        )
+        file(TO_CMAKE_PATH "${_qt_plugins_dir}" _qt_plugins_dir)
+        find_file(
+            _qt_windows_platform_plugin
+            NAMES qwindows.dll
+            HINTS "${_qt_plugins_dir}/platforms"
+            NO_DEFAULT_PATH
+            REQUIRED
+        )
+        install(
+            FILES "${_qt_windows_platform_plugin}"
+            DESTINATION platforms
+        )
+
+        find_file(
+            _qt_windows_style_plugin
+            NAMES qwindowsvistastyle.dll
+            HINTS "${_qt_plugins_dir}/styles"
+            NO_DEFAULT_PATH
+        )
+        if(_qt_windows_style_plugin)
+            install(
+                FILES "${_qt_windows_style_plugin}"
+                DESTINATION styles
+            )
+        endif()
+    else()
+        message(FATAL_ERROR
+            "Neither windeployqt nor Qt's qmake executable was found; "
+            "the Windows runtime cannot be packaged."
+        )
+    endif()
     get_filename_component(_compiler_bin_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
 
     install(
@@ -147,13 +189,15 @@ if(WIN32)
         LIBRARY DESTINATION .
     )
 
-    set(CNMO_EXECUTABLE_NAME "cnmo${CMAKE_EXECUTABLE_SUFFIX}")
-    configure_file(
-        cmake/DeployQt.cmake.in
-        "${CMAKE_CURRENT_BINARY_DIR}/DeployQt.cmake"
-        @ONLY
-    )
-    install(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/DeployQt.cmake")
+    if(WINDEPLOYQT_EXECUTABLE)
+        set(CNMO_EXECUTABLE_NAME "cnmo${CMAKE_EXECUTABLE_SUFFIX}")
+        configure_file(
+            cmake/DeployQt.cmake.in
+            "${CMAKE_CURRENT_BINARY_DIR}/DeployQt.cmake"
+            @ONLY
+        )
+        install(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/DeployQt.cmake")
+    endif()
 endif()
 
 string(TOLOWER "${CMAKE_SYSTEM_NAME}" CNMO_PACKAGE_SYSTEM)

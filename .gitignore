@@ -8,7 +8,9 @@ CMakeLists.txt.user
 env.txt
 .vscode
 /build/
+/build-*/
 /cmake-build-*/
+/dist/
 
 # doc
 *.pdf
