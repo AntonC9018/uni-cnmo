@@ -3,8 +3,10 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , current_tab_index(0)
 { 
     ui->setupUi(this);
+    current_tab_index = ui->tabWidget->currentIndex();
 
     ui->function_selection->setup();
     ui->root_finding->setup(ui->function_selection); 

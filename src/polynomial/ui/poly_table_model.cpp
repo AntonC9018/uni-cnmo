@@ -4,7 +4,14 @@ namespace Poly
 {
     Poly_Table_Model::Poly_Table_Model(QObject *parent)
         : QAbstractTableModel(parent)
+        , samples(nullptr)
+        , num_samples(0)
     {
+    }
+
+    Poly_Table_Model::~Poly_Table_Model()
+    {
+        free(samples);
     }
 
     int Poly_Table_Model::rowCount(const QModelIndex & /*parent*/) const
