@@ -12,11 +12,70 @@ PR's with grammar corrections, bug fixes, improvement suggestions or translation
 
 Leave a star as a way to say "Thank you". Enjoy!
 
-## Approximate build instructions
+## Build requirements
 
-1. `git clone --recursive https://github.com/AntonC9018/uni-cnmo`. `--recursive` is needed to load submodules.
-2. Install `Qt` version 5 (I think). Newer versions will likely cause errors in `Qwt`. You will need to also install `CMake` and `MinGW` or `Cygwin`. They come with `Qt`, if you don't have them already installed.
-3. Download `Qwt` source code and build it. 
-4. Adjust the command in `run.bat` with your paths to compilers and the libraries.
-5. Adjust the path to `libs` in `CMakeLists.txt`.
-6. Build & Run with `run`.
+- CMake 3.21 or newer
+- A C/C++ toolchain with C++17 support
+- Qt 5 or Qt 6 with the Widgets module (Qt 5 is preferred when both are installed)
+- Qwt 6 or newer
+
+Qt, Qwt, and the compiler must use the same architecture and ABI. On Windows,
+for example, do not mix a MinGW Qt installation with an MSVC build of Qwt. A
+standard Qwt installation should contain its headers under `include/qwt`, its
+link library under `lib`, and, for a shared build, its DLL under `bin` or `lib`.
+
+## Configure and build
+
+Clone the repository together with its submodules:
+
+```sh
+git clone --recurse-submodules https://github.com/AntonC9018/uni-cnmo.git
+cd uni-cnmo
+```
+
+For an existing clone, initialize the submodules with:
+
+```sh
+git submodule update --init --recursive
+```
+
+Run CMake from a shell configured for the compiler that matches the selected Qt
+and Qwt installations:
+
+```sh
+cmake -S . -B build -DCMAKE_PREFIX_PATH="<path-to-Qt-kit>" -DQwt_ROOT="<path-to-Qwt-install>"
+cmake --build build --config Release --parallel
+```
+
+`CMAKE_PREFIX_PATH` should point to the Qt kit itself, such as
+`C:/Qt/5.15.2/mingw81_64`. `Qwt_ROOT` is only required when Qwt is outside the
+toolchain's normal search paths.
+
+With a single-configuration generator such as Ninja, select the release
+configuration while configuring:
+
+```sh
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="<path-to-Qt-kit>" -DQwt_ROOT="<path-to-Qwt-install>"
+cmake --build build --parallel
+```
+
+## Create the distributable ZIP
+
+Build the CMake `package` target:
+
+```sh
+cmake --build build --config Release --target package
+```
+
+The archive and its SHA-256 checksum are written to `build/packages`, for
+example:
+
+```text
+build/packages/cnmo-0.1.0-windows-x86_64.zip
+build/packages/cnmo-0.1.0-windows-x86_64.zip.sha256
+```
+
+On Windows, packaging runs `windeployqt` and CMake's runtime dependency
+scanner. The ZIP contains `cnmo.exe`, the Qwt runtime when Qwt is shared, the
+required Qt and compiler DLLs, Qt platform plugins, and the license, so it can
+be extracted and run on another machine without a Qt development installation.
