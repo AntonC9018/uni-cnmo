@@ -1,0 +1,28 @@
+set(_cnmo_install_root "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}")
+
+if(CMAKE_INSTALL_CONFIG_NAME MATCHES "^[Dd]ebug$")
+    set(_cnmo_deploy_configuration --debug)
+else()
+    set(_cnmo_deploy_configuration --release)
+endif()
+
+execute_process(
+    COMMAND
+        "@WINDEPLOYQT_EXECUTABLE@"
+        "${_cnmo_deploy_configuration}"
+        --compiler-runtime
+        --no-translations
+        --dir "${_cnmo_install_root}"
+        "${_cnmo_install_root}/@CNMO_EXECUTABLE_NAME@"
+    RESULT_VARIABLE _cnmo_deploy_result
+    OUTPUT_VARIABLE _cnmo_deploy_output
+    ERROR_VARIABLE _cnmo_deploy_error
+)
+
+if(NOT _cnmo_deploy_result EQUAL 0)
+    message(FATAL_ERROR
+        "windeployqt failed with exit code ${_cnmo_deploy_result}.\n"
+        "${_cnmo_deploy_output}\n"
+        "${_cnmo_deploy_error}"
+    )
+endif()

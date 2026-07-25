@@ -7,6 +7,8 @@ result.txt
 CMakeLists.txt.user
 env.txt
 .vscode
+/build/
+/cmake-build-*/
 
 # doc
 *.pdf
