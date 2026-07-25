@@ -67,15 +67,21 @@ void Function_Selection::reset_builtin(Expression_Func* builtin_functions, size_
 
 Expression_Func* Function_Selection::get_selected_function()
 {
-    return ui->function_custom_rbutton->isChecked() 
-        ? &custom_function
-        : &builtin_functions[ui->function_selection_combo->currentIndex()];
+    if (ui->function_custom_rbutton->isChecked())
+        return &custom_function;
+
+    const int index = ui->function_selection_combo->currentIndex();
+    return index >= 0 && builtin_functions != nullptr
+        ? &builtin_functions[index]
+        : nullptr;
 }
 
 void Function_Selection::change_selected_builtin_function(int index)
 {
-    if (ui->function_builtin_rbutton->isChecked() 
-        && get_selected_function()->expr != NULL)
+    Expression_Func* selected_function = get_selected_function();
+    if (ui->function_builtin_rbutton->isChecked()
+        && selected_function != nullptr
+        && selected_function->expr != NULL)
     {
         emit selected_function_changed();
     }
@@ -143,4 +149,6 @@ void Function_Selection::trigger_selected_function_changed()
 Function_Selection::~Function_Selection()
 {
     func_free(&custom_function);
+    str_free(custom_function_str);
+    delete ui;
 }

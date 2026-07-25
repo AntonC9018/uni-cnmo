@@ -1,5 +1,6 @@
 #pragma once
 #include <assert.h>
+#include <cstddef>
 #include "shared.h"
 
 namespace Poly
@@ -14,20 +15,27 @@ namespace Poly
 
     inline Polynomial* p_alloc(size_t degree)
     {
-        auto p = (Polynomial*) malloc(offsetof(Polynomial, coefficients[degree]));
+        const size_t allocation_size =
+            offsetof(Polynomial, coefficients) + degree * sizeof(double);
+        const size_t object_size = std::max(sizeof(Polynomial), allocation_size);
+        auto p = (Polynomial*) malloc(object_size);
         p->degree = degree;
         return p;
     }
 
     inline Polynomial* p_alloc_zeros(size_t degree)
     {
-        auto p = (Polynomial*) calloc(1, offsetof(Polynomial, coefficients[degree]));
+        const size_t allocation_size =
+            offsetof(Polynomial, coefficients) + degree * sizeof(double);
+        const size_t object_size = std::max(sizeof(Polynomial), allocation_size);
+        auto p = (Polynomial*) calloc(1, object_size);
         p->degree = degree;
         return p;
     }
 
     inline Polynomial* p_make(size_t degree, const double coeffs[])
     {
+        assert(coeffs != NULL || degree == 0);
         auto p = p_alloc(degree);
         memcpy(p->coefficients, coeffs, degree * sizeof(double));
         return p;
@@ -120,6 +128,8 @@ namespace Poly
 
     Polynomial* node_polynomial(const double* xs, size_t num_samples)
     {
+        assert(xs != NULL);
+        assert(num_samples > 0);
         auto result = p_alloc_zeros(num_samples + 1);
         auto t = &result->coefficients[0];
         t[0] = 1;

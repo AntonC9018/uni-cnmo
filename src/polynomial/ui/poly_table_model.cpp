@@ -1,10 +1,18 @@
 #include "poly_table_model.h"
+#include <cstdlib>
 
 namespace Poly
 {
     Poly_Table_Model::Poly_Table_Model(QObject *parent)
         : QAbstractTableModel(parent)
+        , samples(nullptr)
+        , num_samples(0)
     {
+    }
+
+    Poly_Table_Model::~Poly_Table_Model()
+    {
+        std::free(samples);
     }
 
     int Poly_Table_Model::rowCount(const QModelIndex & /*parent*/) const
@@ -53,12 +61,12 @@ namespace Poly
 
     void Poly_Table_Model::setSamples(double* samples, size_t num_samples)
     {
-        emit beginResetModel();
+        beginResetModel();
 
-        if (this->samples) free(this->samples);
+        std::free(this->samples);
         this->samples = samples;
         this->num_samples = num_samples;
 
-        emit endResetModel();
+        endResetModel();
     }
 }

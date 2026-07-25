@@ -10,6 +10,9 @@ namespace Poly
         const double ys[], 
         size_t num_samples)
     {
+        assert(xs != NULL);
+        assert(ys != NULL);
+        assert(num_samples > 0);
         Polynomial* result = p_alloc_zeros(num_samples);
         double* t = array_alloc(num_samples);
 
@@ -65,6 +68,7 @@ namespace Poly
         const double start = 0.0, 
         const double step = 1.0)
     {
+        assert(degree > 0);
         double x = start;
         double* xs = array_alloc(degree);
         double* ys = array_alloc(degree);
@@ -90,6 +94,7 @@ namespace Poly
         const double start = -1.0, 
         const double end = 1.0)
     {
+        assert(degree > 0);
         double* xs = chebyshev_nodes(f, degree, start, end);
         auto result = lagrange_approximate_samples(SAMPLES_CONTIGUOUS(xs, degree), degree);
 
@@ -110,6 +115,8 @@ namespace Poly
         double start, 
         double end)
     {
+        assert(num_samples > 0);
+        assert(num_portions > 0);
         const double outer_step = (end - start) / num_portions;
         double* xs = array_alloc(num_samples * num_portions * 2);
         double* ys = &xs[num_portions * num_samples];
@@ -136,6 +143,9 @@ namespace Poly
 
         inline double operator()(double x)
         {
+            assert(num_portions > 0);
+            assert(polynomials != NULL);
+            assert(num_portions == 1 || xs != NULL);
             for (size_t i = 0; i < num_portions - 1; i++)
             {
                 if (x < xs[i])
@@ -152,8 +162,11 @@ namespace Poly
         size_t num_samples, 
         size_t num_portions)
     {
+        assert(xs != NULL);
+        assert(num_samples > 0);
+        assert(num_portions > 0);
         Polynomial_Portions result;
-        result.xs = array_alloc(num_portions - 1);
+        result.xs = num_portions > 1 ? array_alloc(num_portions - 1) : NULL;
         result.polynomials  = (Polynomial**) malloc(sizeof(Polynomial*) * num_portions);
         result.num_portions = num_portions;
         
@@ -172,6 +185,7 @@ namespace Poly
         size_t num_samples, 
         size_t num_portions)
     {
+        assert(ys != NULL);
         auto result = p_make_portions(xs, num_samples, num_portions);
         
         for (size_t i = 0; i < num_portions; i++)

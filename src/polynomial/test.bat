@@ -1,1 +1,0 @@
-g++ -Wall test.cpp -I../../third_party/mydefines

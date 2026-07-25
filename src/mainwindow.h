@@ -17,7 +17,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    int current_tab_index;
+    int current_tab_index = 0;
     QWidget* get_current_widget();
 
 public slots:

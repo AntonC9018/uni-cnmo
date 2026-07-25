@@ -17,6 +17,7 @@ int main()
     size_t num_samples = countof(x);
     auto p = node_polynomial(x, num_samples);
     p_print(p);
+    p_destroy(p);
 }
 
 void test_stuff()

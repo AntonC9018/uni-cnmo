@@ -8,6 +8,7 @@ namespace Poly
         Q_OBJECT
     public:
         Poly_Table_Model(QObject *parent = nullptr);
+        ~Poly_Table_Model() override;
         int rowCount(const QModelIndex &parent = QModelIndex()) const override;
         int columnCount(const QModelIndex &parent = QModelIndex()) const override;
         QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -15,7 +16,7 @@ namespace Poly
 
         void setSamples(double* samples, size_t num_samples);
         
-        double* samples;
-        size_t num_samples;
+        double* samples = nullptr;
+        size_t num_samples = 0;
     };
 }

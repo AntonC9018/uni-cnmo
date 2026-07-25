@@ -1,53 +1,58 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.21)
 
-project(cnmo LANGUAGES CXX)
+if(POLICY CMP0207)
+    cmake_policy(SET CMP0207 NEW)
+endif()
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+project(
+    cnmo
+    VERSION 0.1.0
+    DESCRIPTION "Numerical Methods and Optimization assignments"
+    LANGUAGES C CXX
+)
 
-# Ui header file generation
-# https://cmake.org/cmake/help/latest/prop_tgt/AUTOUIC.html#prop_tgt:AUTOUIC
-set(CMAKE_AUTOUIC ON)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-# In short, the Qt preprocessor
-# Basically expands some macros
-# https://cmake.org/cmake/help/latest/prop_tgt/AUTOMOC.html#prop_tgt:AUTOMOC
-# https://doc.qt.io/archives/qt-4.8/moc.html
-set(CMAKE_AUTOMOC ON)
+find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(Qwt 6 REQUIRED)
 
-set(CMAKE_AUTORCC ON)
+add_library(cnmo_tinyexpr STATIC
+    third_party/tinyexpr/tinyexpr.c
+)
+add_library(cnmo::tinyexpr ALIAS cnmo_tinyexpr)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+target_compile_features(cnmo_tinyexpr PRIVATE c_std_99)
+target_include_directories(cnmo_tinyexpr
+    PUBLIC
+        "${CMAKE_CURRENT_SOURCE_DIR}/third_party/tinyexpr"
+)
 
-# QtCreator supports the following variables for Android, which are identical to qmake Android variables.
-# Check https://doc.qt.io/qt/deployment-android.html for more information.
-# They need to be set before the find_package( ...) calls below.
+if(NOT WIN32)
+    target_link_libraries(cnmo_tinyexpr PUBLIC m)
+endif()
 
-#if(ANDROID)
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-#    if (ANDROID_ABI STREQUAL "armeabi-v7a")
-#        set(ANDROID_EXTRA_LIBS
-#            ${CMAKE_CURRENT_SOURCE_DIR}/path/to/libcrypto.so
-#            ${CMAKE_CURRENT_SOURCE_DIR}/path/to/libssl.so)
-#    endif()
-#endif()
+add_library(cnmo_strlib STATIC
+    third_party/strlib/strlib.cpp
+)
+add_library(cnmo::strlib ALIAS cnmo_strlib)
 
-# https://doc.qt.io/qt-5/cmake-get-started.html
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+target_compile_features(cnmo_strlib PUBLIC cxx_std_17)
+target_include_directories(cnmo_strlib
+    PUBLIC
+        "${CMAKE_CURRENT_SOURCE_DIR}/third_party/strlib"
+)
 
-# The directory where you store most of your .o objects
-# In my case, it is in the parent directory
-set(ONE_LIBS_DIRECTORY ${CMAKE_SOURCE_DIR}/../libs)
+add_library(cnmo_mydefines INTERFACE)
+add_library(cnmo::mydefines ALIAS cnmo_mydefines)
 
-# The git submodules directory
-set(SUBMODULES_DIRECTORY ${CMAKE_SOURCE_DIR}/third_party)
+target_include_directories(cnmo_mydefines
+    INTERFACE
+        "${CMAKE_CURRENT_SOURCE_DIR}/third_party/mydefines"
+)
 
-
-set(PROJECT_SOURCES
-
+add_executable(cnmo WIN32
     src/main.cpp
-
     src/mainwindow.cpp
     src/mainwindow.h
     src/mainwindow.ui
@@ -55,66 +60,162 @@ set(PROJECT_SOURCES
     src/func/ui/basicplot.cpp
     src/func/ui/basicplot.h
     src/func/ui/curvetracker.cpp
-
-    src/rootfinding/ui/root_finding_main.cpp
-    src/rootfinding/ui/root_finding_main.h
-    src/rootfinding/ui/root_finding_main.ui
-
-    src/polynomial/ui/poly_main.cpp
-    src/polynomial/ui/poly_main.h
-    src/polynomial/ui/poly_main.ui
-
+    src/func/ui/curvetracker.h
     src/func/ui/function_selection.cpp
     src/func/ui/function_selection.h
     src/func/ui/function_selection.ui
 
-    src/rootfinding/ui/zeros_table_model.cpp
-    src/rootfinding/ui/plot.cpp
-
     src/polynomial/ui/plot.cpp
+    src/polynomial/ui/plot.h
+    src/polynomial/ui/poly_main.cpp
+    src/polynomial/ui/poly_main.h
+    src/polynomial/ui/poly_main.ui
     src/polynomial/ui/poly_table_model.cpp
+    src/polynomial/ui/poly_table_model.h
 
-    ${SUBMODULES_DIRECTORY}/strlib/strlib.cpp
+    src/rootfinding/ui/plot.cpp
+    src/rootfinding/ui/plot.h
+    src/rootfinding/ui/root_finding_main.cpp
+    src/rootfinding/ui/root_finding_main.h
+    src/rootfinding/ui/root_finding_main.ui
+    src/rootfinding/ui/zeros_table_model.cpp
+    src/rootfinding/ui/zeros_table_model.h
+    src/rootfinding/ui/zeros_table_row.h
 )
 
-# Tried to use exprtk, but it was too large (20+ mins to compile, 30+ mins to link).
-# https://stackoverflow.com/questions/11783932/how-do-i-add-a-linker-or-compile-flag-in-a-cmake-file
-# https://stackoverflow.com/questions/14125007/gcc-string-table-overflow-error-during-compilation
-# https://digitalkarabela.com/mingw-w64-how-to-fix-file-too-big-too-many-sections/
-# set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wa,-mbig-obj -O2")
-
-# Remove Qwt's deprecation warnings
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-Wno-deprecated-declarations")
-
-add_executable(cnmo ${PROJECT_SOURCES})
-
-target_link_libraries(cnmo PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-
-# Use qwt for graphs.
-target_link_libraries(cnmo PRIVATE 
-    ${ONE_LIBS_DIRECTORY}/qwt/libqwt.a 
-    ${ONE_LIBS_DIRECTORY}/qwt/libqwtd.a 
-    ${ONE_LIBS_DIRECTORY}/qwt/libqwtmathml.a
-    ${ONE_LIBS_DIRECTORY}/qwt/libqwtmathmld.a
-
-    # tinyexpr is already precompiled with -O2
-    # I do not yet know how to compile things separately with CMake.
-    ${SUBMODULES_DIRECTORY}/tinyexpr/tinyexpr.o
+set_target_properties(cnmo PROPERTIES
+    AUTOMOC ON
+    AUTOUIC ON
+    AUTORCC ON
 )
 
-# I store includes (header files / header file libraries) next to libs.
-include_directories(cnmo PUBLIC ../includes)
+target_compile_features(cnmo PRIVATE cxx_std_17)
+target_include_directories(cnmo
+    PRIVATE
+        "${CMAKE_CURRENT_SOURCE_DIR}/src"
+)
+target_link_libraries(cnmo
+    PRIVATE
+        Qt${QT_VERSION_MAJOR}::Widgets
+        Qwt::Qwt
+        cnmo::tinyexpr
+        cnmo::strlib
+        cnmo::mydefines
+)
 
-# Qwt is also there in my case
-include_directories(cnmo PUBLIC ../includes/qwt)
+install(
+    TARGETS cnmo
+    RUNTIME_DEPENDENCY_SET cnmo_runtime_dependencies
+    RUNTIME DESTINATION .
+    BUNDLE DESTINATION .
+)
+install(FILES LICENSE DESTINATION .)
 
-# Include some local dirs so that ui compiler works correctly
-include_directories(cnmo PUBLIC  src)
-include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY})
+if(WIN32)
+    if(MSVC)
+        set(CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION ".")
+        include(InstallRequiredSystemLibraries)
+    endif()
 
-# Include my libraries
-include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/strlib)
-include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/mydefines)
+    get_target_property(
+        _qt_qmake_executable
+        Qt${QT_VERSION_MAJOR}::qmake
+        IMPORTED_LOCATION
+    )
+    if(_qt_qmake_executable)
+        get_filename_component(_qt_bin_dir "${_qt_qmake_executable}" DIRECTORY)
+    endif()
 
-# Expression parsing
-include_directories(cnmo PUBLIC ${SUBMODULES_DIRECTORY}/tinyexpr)
+    find_program(
+        WINDEPLOYQT_EXECUTABLE
+        NAMES windeployqt windeployqt.exe
+        HINTS "${_qt_bin_dir}"
+        DOC "Path to Qt's Windows deployment tool"
+    )
+    if(WINDEPLOYQT_EXECUTABLE)
+        get_filename_component(_qt_bin_dir "${WINDEPLOYQT_EXECUTABLE}" DIRECTORY)
+    elseif(_qt_qmake_executable)
+        execute_process(
+            COMMAND "${_qt_qmake_executable}" -query QT_INSTALL_PLUGINS
+            OUTPUT_VARIABLE _qt_plugins_dir
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            COMMAND_ERROR_IS_FATAL ANY
+        )
+        file(TO_CMAKE_PATH "${_qt_plugins_dir}" _qt_plugins_dir)
+        find_file(
+            _qt_windows_platform_plugin
+            NAMES qwindows.dll
+            HINTS "${_qt_plugins_dir}/platforms"
+            NO_DEFAULT_PATH
+            REQUIRED
+        )
+        install(
+            FILES "${_qt_windows_platform_plugin}"
+            DESTINATION platforms
+        )
+
+        find_file(
+            _qt_windows_style_plugin
+            NAMES qwindowsvistastyle.dll
+            HINTS "${_qt_plugins_dir}/styles"
+            NO_DEFAULT_PATH
+        )
+        if(_qt_windows_style_plugin)
+            install(
+                FILES "${_qt_windows_style_plugin}"
+                DESTINATION styles
+            )
+        endif()
+    else()
+        message(FATAL_ERROR
+            "Neither windeployqt nor Qt's qmake executable was found; "
+            "the Windows runtime cannot be packaged."
+        )
+    endif()
+    get_filename_component(_compiler_bin_dir "${CMAKE_CXX_COMPILER}" DIRECTORY)
+
+    install(
+        RUNTIME_DEPENDENCY_SET cnmo_runtime_dependencies
+        DIRECTORIES
+            "$<TARGET_FILE_DIR:Qwt::Qwt>"
+            "${_qt_bin_dir}"
+            "${_compiler_bin_dir}"
+        PRE_EXCLUDE_REGEXES
+            "api-ms-.*"
+            "ext-ms-.*"
+        POST_EXCLUDE_REGEXES
+            ".*[\\\\/]system32[\\\\/].*"
+        RUNTIME DESTINATION .
+        LIBRARY DESTINATION .
+    )
+
+    if(WINDEPLOYQT_EXECUTABLE)
+        set(CNMO_EXECUTABLE_NAME "cnmo${CMAKE_EXECUTABLE_SUFFIX}")
+        configure_file(
+            cmake/DeployQt.cmake.in
+            "${CMAKE_CURRENT_BINARY_DIR}/DeployQt.cmake"
+            @ONLY
+        )
+        install(SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/DeployQt.cmake")
+    endif()
+endif()
+
+string(TOLOWER "${CMAKE_SYSTEM_NAME}" CNMO_PACKAGE_SYSTEM)
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(aarch64|arm64|ARM64)$")
+    set(CNMO_PACKAGE_ARCHITECTURE "arm64")
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    set(CNMO_PACKAGE_ARCHITECTURE "x86_64")
+else()
+    set(CNMO_PACKAGE_ARCHITECTURE "x86")
+endif()
+
+set(CPACK_GENERATOR "ZIP")
+set(CPACK_PACKAGE_DIRECTORY "${CMAKE_BINARY_DIR}/packages")
+set(
+    CPACK_PACKAGE_FILE_NAME
+    "${PROJECT_NAME}-${PROJECT_VERSION}-${CNMO_PACKAGE_SYSTEM}-${CNMO_PACKAGE_ARCHITECTURE}"
+)
+set(CPACK_PACKAGE_CHECKSUM "SHA256")
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+
+include(CPack)
