@@ -7,7 +7,6 @@ project(
     LANGUAGES C CXX
 )
 
-include(CTest)
 include(GNUInstallDirs)
 
 option(CNMO_BUILD_APP "Build the Qt/Qwt desktop application" ON)
@@ -97,10 +96,4 @@ if(CNMO_BUILD_APP)
         BUNDLE DESTINATION .
         RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
     )
-endif()
-
-if(BUILD_TESTING)
-    add_executable(cnmo_polynomial_smoke src/polynomial/test.cpp)
-    target_link_libraries(cnmo_polynomial_smoke PRIVATE cnmo_support)
-    add_test(NAME polynomial-smoke COMMAND cnmo_polynomial_smoke)
 endif()

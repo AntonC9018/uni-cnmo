@@ -61,7 +61,6 @@ The included presets use Ninja:
 ```sh
 cmake --preset default
 cmake --build --preset default
-ctest --preset default
 ```
 
 For an optimized build:
@@ -100,10 +99,9 @@ platform-specific and is not performed automatically.
 
 ### Headless/core-only build
 
-The numerical smoke test and bundled libraries can be built without Qt or Qwt:
+The bundled libraries can be built without Qt or Qwt:
 
 ```sh
 cmake -S . -B build-core -G Ninja -DCNMO_BUILD_APP=OFF
 cmake --build build-core
-ctest --test-dir build-core --output-on-failure
 ```

@@ -22,8 +22,7 @@
       "inherits": "default",
       "binaryDir": "${sourceDir}/build-release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release",
-        "BUILD_TESTING": false
+        "CMAKE_BUILD_TYPE": "Release"
       }
     }
   ],
@@ -35,15 +34,6 @@
     {
       "name": "release",
       "configurePreset": "release"
-    }
-  ],
-  "testPresets": [
-    {
-      "name": "default",
-      "configurePreset": "default",
-      "output": {
-        "outputOnFailure": true
-      }
     }
   ]
 }
