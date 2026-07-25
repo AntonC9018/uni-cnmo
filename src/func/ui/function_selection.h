@@ -20,9 +20,9 @@ public:
 private:
     Ui::Function_Selection *ui;
 
-    str_t custom_function_str;
-    Expression_Func custom_function;
-    Expression_Func* builtin_functions;
+    str_t custom_function_str = STR_NULL;
+    Expression_Func custom_function {};
+    Expression_Func* builtin_functions = nullptr;
 
 signals:
     void selected_function_changed();

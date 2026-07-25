@@ -16,7 +16,7 @@ namespace Poly
 
         void setSamples(double* samples, size_t num_samples);
         
-        double* samples;
-        size_t num_samples;
+        double* samples = nullptr;
+        size_t num_samples = 0;
     };
 }

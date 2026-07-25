@@ -39,7 +39,8 @@ namespace Root_Finding
         case ITERATIONS:
             return row->num_iters;
         case TIME:
-            return static_cast<qlonglong>(row->microsecs);
+            return QVariant::fromValue<qlonglong>(
+                static_cast<qlonglong>(row->microsecs));
         }
         return 0;
     }
